@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.4 — 2026-09-07
+
+- Desktop shortcut uses `redicon.png` for its icon.
+
+## 0.1.3 — 2026-09-07
+
+- Uses `redicon.png` for the application icon and window icon.
+
 ## 0.1.2 — 2026-09-07
 
 - Cross-platform Avalonia desktop application for Windows, macOS, and Linux.
