@@ -1,17 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using System.Runtime.InteropServices;
 
 namespace Dtdash;
 
 public partial class MainWindow : Window
 {
     private readonly string _configPath;
+    private readonly bool _skipGeometryRestore;
     private const string GeometryFile = "window.json";
+    private const ulong ShiftModifierFlag = 0x00020000;
 
     public MainWindow(string configPath)
     {
         _configPath = configPath;
+        _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         Title = $"DTDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.1"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
@@ -24,6 +28,8 @@ public partial class MainWindow : Window
 
     private void RestoreGeometry()
     {
+        if (_skipGeometryRestore) return;
+
         try
         {
             if (!File.Exists(StatePath)) return;
@@ -48,4 +54,13 @@ public partial class MainWindow : Window
     }
 
     private sealed record WindowGeometry(int X, int Y, double Width, double Height);
+
+    private static bool IsShiftPressedAtStartup()
+    {
+        if (!OperatingSystem.IsMacOS()) return false;
+        return (CGEventSourceFlagsState(0, ShiftModifierFlag) & ShiftModifierFlag) != 0;
+    }
+
+    [DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
+    private static extern ulong CGEventSourceFlagsState(uint sourceState, ulong flags);
 }

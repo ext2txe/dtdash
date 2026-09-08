@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.5 — 2026-09-08
+
+- Holding Shift while starting the application skips restoring saved window geometry and uses the default window size and position.
+
 ## 0.1.4 — 2026-09-07
 
 - Desktop shortcut uses `redicon.png` for its icon.
