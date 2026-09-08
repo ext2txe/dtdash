@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.22 — 2026-09-08
+
+- Registers `Ctrl+Shift+N` as a global hotkey while dtDash is running; it restores the app and opens the note window, including when minimized.
+
 ## 0.1.21 — 2026-09-08
 
 - Persists settings edits when the settings window closes and limits note-window dragging to its non-control surface.

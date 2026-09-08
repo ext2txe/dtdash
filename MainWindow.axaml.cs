@@ -23,7 +23,6 @@ public partial class MainWindow : Window
         _configPath = configPath;
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
-        KeyDown += MainWindow_OnKeyDown;
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
@@ -81,16 +80,7 @@ public partial class MainWindow : Window
 
     private void NoteButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => OpenNoteWindow();
 
-    private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.N && (e.KeyModifiers & (KeyModifiers.Shift | KeyModifiers.Alt)) == (KeyModifiers.Shift | KeyModifiers.Alt))
-        {
-            OpenNoteWindow();
-            e.Handled = true;
-        }
-    }
-
-    private void OpenNoteWindow()
+    public void OpenNoteWindow()
     {
         if (_noteWindow is not null)
         {

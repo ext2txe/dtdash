@@ -7,6 +7,8 @@ namespace Dtdash;
 
 public partial class App : Application
 {
+    private IDisposable? _globalHotkey;
+
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
 
     public override void OnFrameworkInitializationCompleted()
@@ -18,9 +20,20 @@ public partial class App : Application
             AppEventLog.WriteStartup(configPath);
             desktop.ShutdownRequested += (_, _) => AppEventLog.WriteShutdown(configPath);
             desktop.MainWindow = new MainWindow(configPath);
+            _globalHotkey = GlobalHotkey.Register(() =>
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    var mainWindow = (MainWindow)desktop.MainWindow;
+                    mainWindow.ActivateFromSecondInstance();
+                    mainWindow.OpenNoteWindow();
+                }));
             AppInstance.StartActivationListener(() =>
                 Avalonia.Threading.Dispatcher.UIThread.Post(() => ((MainWindow)desktop.MainWindow).ActivateFromSecondInstance()));
-            desktop.Exit += (_, _) => AppInstance.StopActivationListener();
+            desktop.Exit += (_, _) =>
+            {
+                _globalHotkey?.Dispose();
+                AppInstance.StopActivationListener();
+            };
         }
         base.OnFrameworkInitializationCompleted();
     }
