@@ -1,18 +1,23 @@
 # Features
 
-## 0.1.8 — 2026-09-07
+## 0.1.9 — 2026-09-08
 
-- Replaces the shortcut ICO with a transparent multi-size icon containing 16–256 px frames.
+- Uses a transparent multi-size ICO for the Windows application and desktop shortcut icons.
+- Updates Avalonia desktop dependencies to 11.3.14.
 
-## 0.1.7 — 2026-09-07
+## 0.1.8 — 2026-09-08
 
-- Desktop shortcut targets the current Debug executable so the displayed version matches the rebuilt app.
+- Adds an “Open settings” tooltip to the main-window settings button and persists/restores the settings window geometry.
 
-## 0.1.6 — 2026-09-07
+## 0.1.7 — 2026-09-08
 
-- Makes the white background of `redicon.png` transparent for the application and shortcut icons.
+- Adds a bottom status bar with timestamped status messages, a live HH:MM:SS clock, and a gear button that opens an empty Settings window.
 
-## 0.1.5 — 2026-09-07
+## 0.1.6 — 2026-09-09
+
+- Updates Avalonia desktop dependencies to the patched 11.3.14 release line, resolving the transitive `Tmds.DBus.Protocol` vulnerability warning.
+
+## 0.1.5 — 2026-09-08
 
 - Uses the ICO version of `redicon.png` for Windows desktop shortcut and executable icons.
 

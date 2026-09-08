@@ -1,29 +1,66 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using System.Runtime.InteropServices;
 
 namespace Dtdash;
 
 public partial class MainWindow : Window
 {
     private readonly string _configPath;
+    private readonly bool _skipGeometryRestore;
     private const string GeometryFile = "window.json";
+    private const ulong ShiftModifierFlag = 0x00020000;
+    private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
     public MainWindow(string configPath)
     {
         _configPath = configPath;
+        _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         Title = $"DTDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.1"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
+        SetStatus("Ready");
+        UpdateClock();
+        _clockTimer.Tick += (_, _) => UpdateClock();
+        _clockTimer.Start();
         Opened += (_, _) => RestoreGeometry();
-        Closing += (_, _) => SaveGeometry();
+        Closing += (_, _) =>
+        {
+            _clockTimer.Stop();
+            SaveGeometry();
+        };
+    }
+
+    public void SetStatus(string message)
+    {
+        if (this.FindControl<TextBlock>("StatusText") is { } text)
+            text.Text = $"{DateTime.Now:HH:mm:ss} {message}";
+    }
+
+    private void UpdateClock()
+    {
+        if (this.FindControl<TextBlock>("ClockText") is { } text)
+            text.Text = DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    private async void SettingsButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var settingsWindow = new SettingsWindow(Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"))
+        {
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        };
+        await settingsWindow.ShowDialog(this);
     }
 
     private string StatePath => Path.Combine(Path.GetDirectoryName(_configPath)!, GeometryFile);
 
     private void RestoreGeometry()
     {
+        if (_skipGeometryRestore) return;
+
         try
         {
             if (!File.Exists(StatePath)) return;
@@ -48,4 +85,13 @@ public partial class MainWindow : Window
     }
 
     private sealed record WindowGeometry(int X, int Y, double Width, double Height);
+
+    private static bool IsShiftPressedAtStartup()
+    {
+        if (!OperatingSystem.IsMacOS()) return false;
+        return (CGEventSourceFlagsState(0, ShiftModifierFlag) & ShiftModifierFlag) != 0;
+    }
+
+    [DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
+    private static extern ulong CGEventSourceFlagsState(uint sourceState, ulong flags);
 }
