@@ -58,7 +58,7 @@ public partial class MainWindow : Window
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var logPath = GetDailyLogPath();
+        var logPath = AppEventLog.GetLogPath(_configPath);
         Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
         using (File.Open(logPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)) { }
         Process.Start(new ProcessStartInfo
@@ -66,13 +66,6 @@ public partial class MainWindow : Window
             FileName = logPath,
             UseShellExecute = true
         });
-    }
-
-    private string GetDailyLogPath()
-    {
-        var configDirectory = Path.GetDirectoryName(_configPath)!;
-        var parentDirectory = Directory.GetParent(configDirectory)?.FullName ?? configDirectory;
-        return Path.Combine(parentDirectory, "logs", $"{DateTime.Now:yyyyMMdd}_dtdash.log");
     }
 
     private string StatePath => Path.Combine(Path.GetDirectoryName(_configPath)!, GeometryFile);

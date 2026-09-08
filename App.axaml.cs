@@ -13,6 +13,8 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var configPath = ConfigStore.ResolvePath(desktop.Args ?? Array.Empty<string>());
+            AppEventLog.WriteStartup(configPath);
+            desktop.ShutdownRequested += (_, _) => AppEventLog.WriteShutdown(configPath);
             desktop.MainWindow = new MainWindow(configPath);
         }
         base.OnFrameworkInitializationCompleted();

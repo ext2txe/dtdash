@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.12 — 2026-09-08
+
+- Logs application startup and shutdown events, including executable, current log, configuration, and settings-file paths at startup.
+
 ## 0.1.11 — 2026-09-08
 
 - Adds a `Log` button that opens the daily `yyyyMMdd_dtdash.log` file from the `logs` folder beside the configuration folder.
