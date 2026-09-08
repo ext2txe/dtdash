@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Dtdash.NoteWindow"
+        Icon="/redicon.png"
+        Width="420" Height="130"
+        MinWidth="300" MinHeight="100"
+        SystemDecorations="None"
+        CanResize="False"
+        ShowInTaskbar="False">
+  <Border BorderBrush="Gray" BorderThickness="1" Background="{DynamicResource ThemeBackgroundBrush}">
+    <Grid RowDefinitions="*,Auto" Margin="8">
+      <TextBox Name="NoteText"
+               Grid.Row="0"
+               AcceptsReturn="False"
+               TextWrapping="NoWrap"
+               Watermark="Enter note"
+               KeyDown="NoteText_OnKeyDown" />
+      <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6" Margin="0,8,0,0">
+        <Button Content="Clear" Click="ClearButton_OnClick" />
+        <Button Content="Cancel" Click="CancelButton_OnClick" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>

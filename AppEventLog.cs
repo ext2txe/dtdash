@@ -10,6 +10,9 @@ public static class AppEventLog
     }
 
     public static string GetSettingsPath(string configPath) =>
+        SettingsStore.GetPath(configPath);
+
+    public static string GetSettingsGeometryPath(string configPath) =>
         Path.Combine(Path.GetDirectoryName(configPath)!, "settings-window.json");
 
     public static void WriteStartup(string configPath)
@@ -20,7 +23,8 @@ public static class AppEventLog
             $"Executable: {Environment.ProcessPath ?? AppContext.BaseDirectory}",
             $"Current log: {logPath}",
             $"Configuration: {configPath}",
-            $"Settings: {GetSettingsPath(configPath)}");
+            $"Settings: {GetSettingsPath(configPath)}",
+            $"Settings geometry: {GetSettingsGeometryPath(configPath)}");
     }
 
     public static void WriteShutdown(string configPath) =>

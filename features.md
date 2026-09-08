@@ -1,5 +1,15 @@
 # Features
 
+## 0.1.21 — 2026-09-08
+
+- Persists settings edits when the settings window closes and limits note-window dragging to its non-control surface.
+
+## 0.1.20 — 2026-09-08
+
+- Adds a minimal borderless note-entry window, opened by the `Note` button or `Shift+Alt+N`, with keyboard completion and clearing controls.
+- Stores single-line timestamped notes in the editable `PathToNotes` setting.
+- Adds a settings grid backed by a separate `settings.json` file.
+
 ## 0.1.19 — 2026-09-08
 
 - Appends the application version to the `dtDash` window title.

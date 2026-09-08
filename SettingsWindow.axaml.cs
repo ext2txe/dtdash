@@ -7,14 +7,28 @@ namespace Dtdash;
 public partial class SettingsWindow : Window
 {
     private readonly string _geometryPath;
+    private readonly string _settingsPath;
+    private readonly SettingsViewModel _viewModel;
 
-    public SettingsWindow(string geometryPath)
+    public SettingsWindow(string geometryPath, string settingsPath)
     {
         _geometryPath = geometryPath;
+        _settingsPath = settingsPath;
+        _viewModel = new SettingsViewModel(SettingsStore.Load(settingsPath));
         InitializeComponent();
+        DataContext = _viewModel;
         Opened += (_, _) => RestoreGeometry();
-        Closing += (_, _) => SaveGeometry();
+        Closing += (_, _) =>
+        {
+            SaveSettings();
+            SaveGeometry();
+        };
     }
+
+    private void SaveButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
+        SaveSettings();
+
+    private void SaveSettings() => SettingsStore.Save(_settingsPath, _viewModel.Settings);
 
     private void RestoreGeometry()
     {
@@ -42,4 +56,11 @@ public partial class SettingsWindow : Window
     }
 
     private sealed record WindowGeometry(int X, int Y, double Width, double Height);
+
+    private sealed class SettingsViewModel
+    {
+        public List<SettingsStore.SettingEntry> Settings { get; }
+
+        public SettingsViewModel(List<SettingsStore.SettingEntry> settings) => Settings = settings;
+    }
 }

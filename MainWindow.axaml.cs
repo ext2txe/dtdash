@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using System.Diagnostics;
@@ -15,12 +16,14 @@ public partial class MainWindow : Window
     private const ulong ShiftModifierFlag = 0x00020000;
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private SettingsWindow? _settingsWindow;
+    private NoteWindow? _noteWindow;
 
     public MainWindow(string configPath)
     {
         _configPath = configPath;
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
+        KeyDown += MainWindow_OnKeyDown;
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
@@ -66,12 +69,41 @@ public partial class MainWindow : Window
             return;
         }
 
-        _settingsWindow = new SettingsWindow(Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"))
+        _settingsWindow = new SettingsWindow(
+            Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"),
+            SettingsStore.GetPath(_configPath))
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
         await _settingsWindow.ShowDialog(this);
         _settingsWindow = null;
+    }
+
+    private void NoteButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => OpenNoteWindow();
+
+    private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.N && (e.KeyModifiers & (KeyModifiers.Shift | KeyModifiers.Alt)) == (KeyModifiers.Shift | KeyModifiers.Alt))
+        {
+            OpenNoteWindow();
+            e.Handled = true;
+        }
+    }
+
+    private void OpenNoteWindow()
+    {
+        if (_noteWindow is not null)
+        {
+            _noteWindow.Activate();
+            return;
+        }
+
+        var settings = SettingsStore.Load(_configPath);
+        var notesPath = settings.FirstOrDefault(s => s.Name == "PathToNotes")?.Value
+            ?? SettingsStore.Load(_configPath).First(s => s.Name == "PathToNotes").DefaultValue;
+        _noteWindow = new NoteWindow(notesPath) { WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        _noteWindow.Closed += (_, _) => _noteWindow = null;
+        _noteWindow.Show(this);
     }
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

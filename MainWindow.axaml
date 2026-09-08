@@ -10,11 +10,12 @@
     </StackPanel>
 
     <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1,1,0,0" Padding="8,4">
-      <Grid ColumnDefinitions="*,Auto,Auto,Auto" VerticalAlignment="Center">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" VerticalAlignment="Center">
         <TextBlock Name="StatusText" Grid.Column="0" VerticalAlignment="Center" />
-        <Button Name="LogButton" Grid.Column="1" Content="Log" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="View log file" Click="LogButton_OnClick" />
-        <Button Name="SettingsButton" Grid.Column="2" Content="⚙" FontSize="18" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="Open settings" Click="SettingsButton_OnClick" />
-        <TextBlock Name="ClockText" Grid.Column="3" VerticalAlignment="Center" MinWidth="65" TextAlignment="Right" />
+        <Button Name="NoteButton" Grid.Column="1" Content="Note" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="Add note" Click="NoteButton_OnClick" />
+        <Button Name="LogButton" Grid.Column="2" Content="Log" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="View log file" Click="LogButton_OnClick" />
+        <Button Name="SettingsButton" Grid.Column="3" Content="⚙" FontSize="18" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="Open settings" Click="SettingsButton_OnClick" />
+        <TextBlock Name="ClockText" Grid.Column="4" VerticalAlignment="Center" MinWidth="65" TextAlignment="Right" />
       </Grid>
     </Border>
   </Grid>
