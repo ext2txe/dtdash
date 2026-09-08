@@ -106,3 +106,4 @@
 - Initial configuration model includes the named AvBot/AvAutomation settings as a proof of concept.
 - Successful builds increment the patch version for the next build.
 - Windows builds provide a desktop shortcut to the current executable.
+- 2026-09-08: Windows Ctrl+Shift+N opens the quick notes window.

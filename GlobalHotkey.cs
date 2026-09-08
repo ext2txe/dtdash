@@ -9,12 +9,85 @@ public static class GlobalHotkey
     public static IDisposable Register(Action callback)
     {
         if (OperatingSystem.IsMacOS()) return MacHotkey.Register(callback);
+        if (OperatingSystem.IsWindows()) return WindowsHotkey.Register(callback);
         return new NoopHotkey();
     }
 
     private sealed class NoopHotkey : IDisposable
     {
         public void Dispose() { }
+    }
+
+    private static class WindowsHotkey
+    {
+        private const int WmHotKey = 0x0312;
+        private const int ModControl = 0x0002;
+        private const int ModShift = 0x0004;
+        private const int VkN = 0x4E;
+        private const int HotkeyId = 1;
+        private static readonly WndProc WindowProc = OnWindowMessage;
+
+        public static IDisposable Register(Action callback)
+        {
+            var handle = GetMainWindowHandle();
+            if (handle == IntPtr.Zero || !RegisterHotKey(handle, HotkeyId, ModControl | ModShift, VkN))
+                return new NoopHotkey();
+
+            var previous = SetWindowLongPtr(handle, -4, Marshal.GetFunctionPointerForDelegate(WindowProc));
+            return new HotkeyRegistration(handle, previous, callback);
+        }
+
+        private static IntPtr OnWindowMessage(IntPtr handle, uint message, IntPtr wParam, IntPtr lParam)
+        {
+            if (registrations.TryGetValue(handle, out var active))
+            {
+                if (message == WmHotKey && wParam.ToInt32() == HotkeyId)
+                    active.Invoke();
+                return CallWindowProc(active.Previous, handle, message, wParam, lParam);
+            }
+            return DefWindowProc(handle, message, wParam, lParam);
+        }
+
+        private static readonly Dictionary<IntPtr, HotkeyRegistration> registrations = new();
+
+        private sealed class HotkeyRegistration : IDisposable
+        {
+            public IntPtr Previous { get; }
+            private readonly IntPtr _handle;
+            private readonly Action _callback;
+
+            public HotkeyRegistration(IntPtr handle, IntPtr previous, Action callback)
+            {
+                _handle = handle;
+                Previous = previous;
+                _callback = callback;
+                registrations[handle] = this;
+            }
+
+            public void Dispose()
+            {
+                UnregisterHotKey(_handle, HotkeyId);
+                SetWindowLongPtr(_handle, -4, Previous);
+                registrations.Remove(_handle);
+            }
+
+            public void Invoke() => _callback();
+        }
+
+        private static IntPtr GetMainWindowHandle()
+        {
+            return App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                && desktop.MainWindow?.TryGetPlatformHandle()?.Handle is { } handle ? handle : IntPtr.Zero;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+        private delegate IntPtr WndProc(IntPtr handle, uint message, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
+        [DllImport("user32.dll", SetLastError = true)] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DllImport("user32.dll")] private static extern IntPtr CallWindowProc(IntPtr previous, IntPtr handle, uint message, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll")] private static extern IntPtr DefWindowProc(IntPtr handle, uint message, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")] private static extern IntPtr SetWindowLongPtr(IntPtr handle, int index, IntPtr value);
     }
 
     private static class MacHotkey
