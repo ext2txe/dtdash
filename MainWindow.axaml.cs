@@ -48,7 +48,10 @@ public partial class MainWindow : Window
 
     private async void SettingsButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var settingsWindow = new SettingsWindow { WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var settingsWindow = new SettingsWindow(Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"))
+        {
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        };
         await settingsWindow.ShowDialog(this);
     }
 

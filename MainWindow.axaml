@@ -12,7 +12,7 @@
     <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1,1,0,0" Padding="8,4">
       <Grid ColumnDefinitions="*,Auto,Auto" VerticalAlignment="Center">
         <TextBlock Name="StatusText" Grid.Column="0" VerticalAlignment="Center" />
-        <Button Name="SettingsButton" Grid.Column="1" Content="⚙" FontSize="18" Padding="8,2" Margin="8,0,4,0" Click="SettingsButton_OnClick" />
+        <Button Name="SettingsButton" Grid.Column="1" Content="⚙" FontSize="18" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="Open settings" Click="SettingsButton_OnClick" />
         <TextBlock Name="ClockText" Grid.Column="2" VerticalAlignment="Center" MinWidth="65" TextAlignment="Right" />
       </Grid>
     </Border>

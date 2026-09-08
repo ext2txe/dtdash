@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.8 — 2026-09-08
+
+- Adds an “Open settings” tooltip to the main-window settings button and persists/restores the settings window geometry.
+
 ## 0.1.7 — 2026-09-08
 
 - Adds a bottom status bar with timestamped status messages, a live HH:MM:SS clock, and a gear button that opens an empty Settings window.
