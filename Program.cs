@@ -1,7 +1,21 @@
 using Avalonia;
 using Dtdash;
 
-BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+if (AppInstance.TryAcquire())
+{
+    try
+    {
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
+    finally
+    {
+        AppInstance.Release();
+    }
+}
+else
+{
+    AppInstance.SignalExistingInstance();
+}
 
 static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>()
     .UsePlatformDetect()

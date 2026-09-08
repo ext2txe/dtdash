@@ -1,5 +1,17 @@
 # Features
 
+## 0.1.19 — 2026-09-08
+
+- Appends the application version to the `dtDash` window title.
+
+## 0.1.18 — 2026-09-08
+
+- A second launch activates the existing instance, restores it if minimized, and brings it to the front.
+
+## 0.1.17 — 2026-09-08
+
+- Prevents more than one instance of the application from running at the same time.
+
 ## 0.1.16 — 2026-09-08
 
 - Sets the Avalonia application name to `dtDash`.

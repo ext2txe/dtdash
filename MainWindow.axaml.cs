@@ -21,7 +21,7 @@ public partial class MainWindow : Window
         _configPath = configPath;
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
-        Title = "dtDash";
+        Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
         SetStatus("Ready");
@@ -41,6 +41,15 @@ public partial class MainWindow : Window
     {
         if (this.FindControl<TextBlock>("StatusText") is { } text)
             text.Text = $"{DateTime.Now:HH:mm:ss} {message}";
+    }
+
+    public void ActivateFromSecondInstance()
+    {
+        WindowState = WindowState.Normal;
+        Topmost = true;
+        Activate();
+        Topmost = false;
+        Focus();
     }
 
     private void UpdateClock()
