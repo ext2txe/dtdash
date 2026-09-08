@@ -1,5 +1,21 @@
 # Features
 
+## 0.1.16 — 2026-09-08
+
+- Sets the Avalonia application name to `dtDash`.
+
+## 0.1.15 — 2026-09-08
+
+- Sets the application title to `dtDash`.
+
+## 0.1.14 — 2026-09-08
+
+- Closing the main window shuts down the application and closes the settings window while leaving the external log window open.
+
+## 0.1.13 — 2026-09-08
+
+- Closing the main window shuts down the application and closes the settings window.
+
 ## 0.1.12 — 2026-09-08
 
 - Logs application startup and shutdown events, including executable, current log, configuration, and settings-file paths at startup.

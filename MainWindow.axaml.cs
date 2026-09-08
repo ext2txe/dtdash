@@ -14,13 +14,14 @@ public partial class MainWindow : Window
     private const string GeometryFile = "window.json";
     private const ulong ShiftModifierFlag = 0x00020000;
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private SettingsWindow? _settingsWindow;
 
     public MainWindow(string configPath)
     {
         _configPath = configPath;
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
-        Title = $"DTDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.1"}";
+        Title = "dtDash";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
         SetStatus("Ready");
@@ -31,6 +32,7 @@ public partial class MainWindow : Window
         Closing += (_, _) =>
         {
             _clockTimer.Stop();
+            _settingsWindow?.Close();
             SaveGeometry();
         };
     }
@@ -49,11 +51,18 @@ public partial class MainWindow : Window
 
     private async void SettingsButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var settingsWindow = new SettingsWindow(Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"))
+        if (_settingsWindow is not null)
+        {
+            _settingsWindow.Activate();
+            return;
+        }
+
+        _settingsWindow = new SettingsWindow(Path.Combine(Path.GetDirectoryName(_configPath)!, "settings-window.json"))
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
-        await settingsWindow.ShowDialog(this);
+        await _settingsWindow.ShowDialog(this);
+        _settingsWindow = null;
     }
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
