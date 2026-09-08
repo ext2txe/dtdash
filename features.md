@@ -4,6 +4,10 @@
 
 - Holding Shift while starting the application skips restoring saved window geometry and uses the default window size and position.
 
+## 0.1.6 — 2026-09-08
+
+- Updates Avalonia desktop dependencies to the patched 11.3.14 release line, resolving the transitive `Tmds.DBus.Protocol` vulnerability warning.
+
 ## 0.1.4 — 2026-09-07
 
 - Desktop shortcut uses `redicon.png` for its icon.
