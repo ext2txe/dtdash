@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.11 — 2026-09-08
+
+- Adds a `Log` button that opens the daily `yyyyMMdd_dtdash.log` file from the `logs` folder beside the configuration folder.
+
+## 0.1.10 — 2026-09-08
+
+- Stores the default configuration under the user's home directory at `<user home directory>/.dtdash/config.json`.
+
 ## 0.1.9 — 2026-09-08
 
 - Uses a transparent multi-size ICO for the Windows application and desktop shortcut icons.

@@ -8,7 +8,7 @@ public static class ConfigStore
     {
         var supplied = args.FirstOrDefault(a => !string.IsNullOrWhiteSpace(a) && !a.StartsWith('-'));
         var path = supplied is null
-            ? Path.Combine(AppContext.BaseDirectory, ".dtdash", "config.json")
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "config.json")
             : Path.GetFullPath(supplied);
         if (!File.Exists(path))
         {

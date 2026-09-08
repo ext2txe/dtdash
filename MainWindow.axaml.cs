@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Dtdash;
@@ -53,6 +54,25 @@ public partial class MainWindow : Window
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
         await settingsWindow.ShowDialog(this);
+    }
+
+    private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var logPath = GetDailyLogPath();
+        Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
+        using (File.Open(logPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)) { }
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = logPath,
+            UseShellExecute = true
+        });
+    }
+
+    private string GetDailyLogPath()
+    {
+        var configDirectory = Path.GetDirectoryName(_configPath)!;
+        var parentDirectory = Directory.GetParent(configDirectory)?.FullName ?? configDirectory;
+        return Path.Combine(parentDirectory, "logs", $"{DateTime.Now:yyyyMMdd}_dtdash.log");
     }
 
     private string StatePath => Path.Combine(Path.GetDirectoryName(_configPath)!, GeometryFile);
