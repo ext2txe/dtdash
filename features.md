@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.7 — 2026-09-08
+
+- Adds a bottom status bar with timestamped status messages, a live HH:MM:SS clock, and a gear button that opens an empty Settings window.
+
 ## 0.1.5 — 2026-09-08
 
 - Holding Shift while starting the application skips restoring saved window geometry and uses the default window size and position.

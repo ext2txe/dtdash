@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using System.Runtime.InteropServices;
 
 namespace Dtdash;
@@ -11,6 +12,7 @@ public partial class MainWindow : Window
     private readonly bool _skipGeometryRestore;
     private const string GeometryFile = "window.json";
     private const ulong ShiftModifierFlag = 0x00020000;
+    private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
     public MainWindow(string configPath)
     {
@@ -20,8 +22,34 @@ public partial class MainWindow : Window
         Title = $"DTDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.1"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
+        SetStatus("Ready");
+        UpdateClock();
+        _clockTimer.Tick += (_, _) => UpdateClock();
+        _clockTimer.Start();
         Opened += (_, _) => RestoreGeometry();
-        Closing += (_, _) => SaveGeometry();
+        Closing += (_, _) =>
+        {
+            _clockTimer.Stop();
+            SaveGeometry();
+        };
+    }
+
+    public void SetStatus(string message)
+    {
+        if (this.FindControl<TextBlock>("StatusText") is { } text)
+            text.Text = $"{DateTime.Now:HH:mm:ss} {message}";
+    }
+
+    private void UpdateClock()
+    {
+        if (this.FindControl<TextBlock>("ClockText") is { } text)
+            text.Text = DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    private async void SettingsButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var settingsWindow = new SettingsWindow { WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        await settingsWindow.ShowDialog(this);
     }
 
     private string StatePath => Path.Combine(Path.GetDirectoryName(_configPath)!, GeometryFile);
