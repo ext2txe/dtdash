@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.27 — 2026-09-08 22:55
+
+- Resets quick-edit window geometry when Shift is pressed at startup and keeps restored geometry within the display bounds.
+
+## 0.1.26 — 2026-09-08 22:55
+
+- Adds the Windows `Ctrl+Shift+N` global hotkey to open a quick note.
+
 ## 0.1.25 — 2026-09-08
 
 - Opens hotkey-triggered notes without owning them from the minimized main window, preventing the main window from being restored.
