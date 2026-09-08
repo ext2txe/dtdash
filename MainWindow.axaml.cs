@@ -54,6 +54,13 @@ public partial class MainWindow : Window
         Focus();
     }
 
+    public void OpenNoteFromHotkey()
+    {
+        if (WindowState != WindowState.Minimized)
+            ActivateFromSecondInstance();
+        OpenNoteWindow();
+    }
+
     private void UpdateClock()
     {
         if (this.FindControl<TextBlock>("ClockText") is { } text)

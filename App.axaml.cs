@@ -20,12 +20,12 @@ public partial class App : Application
             AppEventLog.WriteStartup(configPath);
             desktop.ShutdownRequested += (_, _) => AppEventLog.WriteShutdown(configPath);
             desktop.MainWindow = new MainWindow(configPath);
+            MacApplicationIcon.Set();
             _globalHotkey = GlobalHotkey.Register(() =>
                 Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                 {
                     var mainWindow = (MainWindow)desktop.MainWindow;
-                    mainWindow.ActivateFromSecondInstance();
-                    mainWindow.OpenNoteWindow();
+                    mainWindow.OpenNoteFromHotkey();
                 }));
             AppInstance.StartActivationListener(() =>
                 Avalonia.Threading.Dispatcher.UIThread.Post(() => ((MainWindow)desktop.MainWindow).ActivateFromSecondInstance()));

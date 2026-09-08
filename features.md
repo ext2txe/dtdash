@@ -1,5 +1,10 @@
 # Features
 
+## 0.1.23 — 2026-09-08
+
+- Keeps the main window minimized when the global hotkey opens a note.
+- Sets the macOS dock icon from `redicon.png`.
+
 ## 0.1.22 — 2026-09-08
 
 - Registers `Ctrl+Shift+N` as a global hotkey while dtDash is running; it restores the app and opens the note window, including when minimized.
