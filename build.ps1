@@ -14,7 +14,7 @@ $shortcut = $shell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $exe
 $shortcut.WorkingDirectory = Split-Path $exe
 $shortcut.Description = 'Run DTDash'
-$shortcut.IconLocation = Join-Path $PSScriptRoot 'redicon.png'
+$shortcut.IconLocation = Join-Path $PSScriptRoot 'redicon.ico'
 $shortcut.Save()
 Write-Host "Built $exe version $version"
 Write-Host "Shortcut $shortcutPath"
