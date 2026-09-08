@@ -10,6 +10,10 @@ public partial class SettingsWindow : Window
     private readonly string _settingsPath;
     private readonly SettingsViewModel _viewModel;
 
+    public SettingsWindow() : this(
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "settings-window.json"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "settings.json")) { }
+
     public SettingsWindow(string geometryPath, string settingsPath)
     {
         _geometryPath = geometryPath;

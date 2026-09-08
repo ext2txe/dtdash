@@ -30,6 +30,9 @@ public static class AppEventLog
     public static void WriteShutdown(string configPath) =>
         Write(GetLogPath(configPath), "Application shut down");
 
+    public static void WriteGeometryIssue(string configPath, string message) =>
+        Write(GetLogPath(configPath), message);
+
     private static void Write(string logPath, params string[] entries)
     {
         try

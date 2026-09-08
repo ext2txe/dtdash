@@ -107,3 +107,4 @@
 - Successful builds increment the patch version for the next build.
 - Windows builds provide a desktop shortcut to the current executable.
 - 2026-09-08: Windows Ctrl+Shift+N opens the quick notes window.
+- 2026-09-08: Quick notes window position and geometry persist on Windows and macOS.

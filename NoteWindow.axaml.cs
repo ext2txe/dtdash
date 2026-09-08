@@ -2,20 +2,59 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia;
 
 namespace Dtdash;
 
 public partial class NoteWindow : Window
 {
     private readonly string _notesPath;
+    private readonly string _geometryPath;
 
-    public NoteWindow(string notesPath)
+    public NoteWindow() : this(
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json")) { }
+
+    public NoteWindow(string notesPath, string geometryPath)
     {
         _notesPath = notesPath;
+        _geometryPath = geometryPath;
         InitializeComponent();
-        Opened += (_, _) => this.FindControl<TextBox>("NoteText")?.Focus();
+        Opened += (_, _) =>
+        {
+            RestoreGeometry();
+            this.FindControl<TextBox>("NoteText")?.Focus();
+        };
+        Closing += (_, _) => SaveGeometry();
         PointerPressed += NoteWindow_OnPointerPressed;
     }
+
+    private void RestoreGeometry()
+    {
+        try
+        {
+            if (!File.Exists(_geometryPath)) return;
+            var state = System.Text.Json.JsonSerializer.Deserialize<WindowGeometry>(File.ReadAllText(_geometryPath));
+            if (state is null) return;
+            Width = Math.Clamp(state.Width, MinWidth, 3000);
+            Height = Math.Clamp(state.Height, MinHeight, 2000);
+            Position = new PixelPoint(state.X, state.Y);
+        }
+        catch { }
+    }
+
+    private void SaveGeometry()
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(_geometryPath)!);
+            var state = new WindowGeometry(Position.X, Position.Y, Width, Height);
+            File.WriteAllText(_geometryPath, System.Text.Json.JsonSerializer.Serialize(state));
+        }
+        catch { }
+    }
+
+    private sealed record WindowGeometry(int X, int Y, double Width, double Height);
 
     private void NoteText_OnKeyDown(object? sender, KeyEventArgs e)
     {

@@ -14,9 +14,12 @@ public partial class MainWindow : Window
     private readonly bool _skipGeometryRestore;
     private const string GeometryFile = "window.json";
     private const ulong ShiftModifierFlag = 0x00020000;
+    private const short ShiftKey = 0x10;
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private SettingsWindow? _settingsWindow;
     private NoteWindow? _noteWindow;
+
+    public MainWindow() : this(ConfigStore.ResolvePath(Array.Empty<string>())) { }
 
     public MainWindow(string configPath)
     {
@@ -102,7 +105,10 @@ public partial class MainWindow : Window
         var settings = SettingsStore.Load(_configPath);
         var notesPath = settings.FirstOrDefault(s => s.Name == "PathToNotes")?.Value
             ?? SettingsStore.Load(_configPath).First(s => s.Name == "PathToNotes").DefaultValue;
-        _noteWindow = new NoteWindow(notesPath) { WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        _noteWindow = new NoteWindow(
+            notesPath,
+            Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"))
+        { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
             _noteWindow.Show(this);
@@ -133,12 +139,34 @@ public partial class MainWindow : Window
             if (!File.Exists(StatePath)) return;
             var state = System.Text.Json.JsonSerializer.Deserialize<WindowGeometry>(File.ReadAllText(StatePath));
             if (state is null) return;
-            Width = Math.Clamp(state.Width, MinWidth, 3000);
-            Height = Math.Clamp(state.Height, MinHeight, 2000);
+            var width = Math.Clamp(state.Width, MinWidth, 3000);
+            var height = Math.Clamp(state.Height, MinHeight, 2000);
+            var restoredBounds = new PixelRect(
+                state.X,
+                state.Y,
+                (int)Math.Ceiling(width),
+                (int)Math.Ceiling(height));
+
+            if (!Screens.All.Any(screen => Contains(screen.WorkingArea, restoredBounds)))
+            {
+                var message = "Saved window geometry is outside display bounds; using default startup geometry.";
+                AppEventLog.WriteGeometryIssue(_configPath, message);
+                SetStatus(message);
+                return;
+            }
+
+            Width = width;
+            Height = height;
             Position = new PixelPoint(state.X, state.Y);
         }
         catch { }
     }
+
+    private static bool Contains(PixelRect display, PixelRect window) =>
+        window.X >= display.X &&
+        window.Y >= display.Y &&
+        window.Right <= display.Right &&
+        window.Bottom <= display.Bottom;
 
     private void SaveGeometry()
     {
@@ -155,9 +183,17 @@ public partial class MainWindow : Window
 
     private static bool IsShiftPressedAtStartup()
     {
-        if (!OperatingSystem.IsMacOS()) return false;
-        return (CGEventSourceFlagsState(0, ShiftModifierFlag) & ShiftModifierFlag) != 0;
+        if (OperatingSystem.IsWindows())
+            return (GetAsyncKeyState(ShiftKey) & 0x8000) != 0;
+
+        if (OperatingSystem.IsMacOS())
+            return (CGEventSourceFlagsState(0, ShiftModifierFlag) & ShiftModifierFlag) != 0;
+
+        return false;
     }
+
+    [DllImport("user32.dll")]
+    private static extern short GetAsyncKeyState(int virtualKey);
 
     [DllImport("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")]
     private static extern ulong CGEventSourceFlagsState(uint sourceState, ulong flags);
