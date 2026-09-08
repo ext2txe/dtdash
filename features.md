@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.31 — 2026-09-08 23:00
+
+- Replaces Quick Edit Clear and Cancel buttons with context-menu actions, using Esc and Shift+Esc as their keyboard shortcuts, and reduces the window height.
+
 ## 0.1.27 — 2026-09-08 22:55
 
 - Resets quick-edit window geometry when Shift is pressed at startup and keeps restored geometry within the display bounds.

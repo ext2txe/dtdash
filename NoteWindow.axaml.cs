@@ -71,10 +71,10 @@ public partial class NoteWindow : Window
         }
     }
 
-    private void ClearButton_OnClick(object? sender, RoutedEventArgs e) =>
+    private void ClearMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
         this.FindControl<TextBox>("NoteText")!.Clear();
 
-    private void CancelButton_OnClick(object? sender, RoutedEventArgs e) => Close();
+    private void CancelMenuItem_OnClick(object? sender, RoutedEventArgs e) => Close();
 
     private void NoteWindow_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {

@@ -6,7 +6,7 @@ when a message results in one of more files being modified, increment the versio
 
 If a build is required always explicitly identify the version of the build in the message announcing the build
 
-whenever a new functional feature request is defined or modified, append that feature to the file features.md together with a date and time stamp (YYYY-MM-DD HH:mm)
+whenever a functional feature is requested, implemented, or modified, append or update that feature in features.md together with a date and time stamp (YYYY-MM-DD HH:mm). Update features.md in the same change before building.
 
 never introduce changes not directly related to the current request.  If you identify improvements that can be made to the code base, identify these. Do not unilaterally implement them withou explicit instruction to do so.
 
