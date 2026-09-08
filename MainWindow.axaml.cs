@@ -34,6 +34,7 @@ public partial class MainWindow : Window
         Closing += (_, _) =>
         {
             _clockTimer.Stop();
+            _noteWindow?.Close();
             _settingsWindow?.Close();
             SaveGeometry();
         };
@@ -56,9 +57,12 @@ public partial class MainWindow : Window
 
     public void OpenNoteFromHotkey()
     {
-        if (WindowState != WindowState.Minimized)
+        var wasMinimized = WindowState == WindowState.Minimized;
+        if (!wasMinimized)
             ActivateFromSecondInstance();
-        OpenNoteWindow();
+        OpenNoteWindow(false);
+        if (wasMinimized)
+            WindowState = WindowState.Minimized;
     }
 
     private void UpdateClock()
@@ -87,7 +91,7 @@ public partial class MainWindow : Window
 
     private void NoteButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => OpenNoteWindow();
 
-    public void OpenNoteWindow()
+    public void OpenNoteWindow(bool useMainWindowAsOwner = true)
     {
         if (_noteWindow is not null)
         {
@@ -100,7 +104,10 @@ public partial class MainWindow : Window
             ?? SettingsStore.Load(_configPath).First(s => s.Name == "PathToNotes").DefaultValue;
         _noteWindow = new NoteWindow(notesPath) { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
-        _noteWindow.Show(this);
+        if (useMainWindowAsOwner)
+            _noteWindow.Show(this);
+        else
+            _noteWindow.Show();
     }
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

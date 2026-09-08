@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.25 — 2026-09-08
+
+- Opens hotkey-triggered notes without owning them from the minimized main window, preventing the main window from being restored.
+
+## 0.1.24 — 2026-09-08
+
+- Preserves the minimized state of the main window after opening a quick note.
+
 ## 0.1.23 — 2026-09-08
 
 - Keeps the main window minimized when the global hotkey opens a note.
