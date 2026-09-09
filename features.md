@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.48 — 2026-09-09 22:48
+
+- Places the Sticky checkbox last in the quick-edit tab sequence.
+
 ## 0.1.47 — 2026-09-09 16:20
 
 - Resets the quick-edit Sticky checkbox to its persisted setting when the window closes, including via Escape.
