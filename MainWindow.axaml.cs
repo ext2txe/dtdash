@@ -27,15 +27,18 @@ public partial class MainWindow : Window
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
-        if (ShouldStartMinimized())
-            WindowState = WindowState.Minimized;
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
         SetStatus("Ready");
         UpdateClock();
         _clockTimer.Tick += (_, _) => UpdateClock();
         _clockTimer.Start();
-        Opened += (_, _) => RestoreGeometry();
+        Opened += (_, _) =>
+        {
+            RestoreGeometry();
+            if (ShouldStartMinimized())
+                Dispatcher.UIThread.Post(() => WindowState = WindowState.Minimized);
+        };
         Closing += (_, _) =>
         {
             _clockTimer.Stop();

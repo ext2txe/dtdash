@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.38 — 2026-09-09 08:22
+
+- Applies `StartMinimized` after the main window opens, allowing the startup window to lay out its controls correctly before minimizing.
+
 ## 0.1.37 — 2026-09-09 08:20
 
 - Adds the `StartMinimized` configuration setting, defaulting to `true`, and starts the main window minimized when enabled.
