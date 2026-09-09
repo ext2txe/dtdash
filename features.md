@@ -103,6 +103,10 @@
 
 - Adds a `Log` button that opens the daily `yyyyMMdd_dtdash.log` file from the `logs` folder beside the configuration folder.
 
+## 0.1.39 — 2026-09-09 09:55
+
+- Quick edit notes use separate tag and note inputs, default to the last saved tag, support Alt+T to edit the tag, and save as `timestamp - tag - note`.
+
 ## 0.1.10 — 2026-09-08
 
 - Stores the default configuration under the user's home directory at `<user home directory>/.dtdash/config.json`.

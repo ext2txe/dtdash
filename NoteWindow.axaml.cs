@@ -23,6 +23,9 @@ public partial class NoteWindow : Window
         Opened += (_, _) =>
         {
             RestoreGeometry();
+            var tagText = this.FindControl<TextBox>("TagText");
+            if (tagText is not null)
+                tagText.Text = LoadLastTag();
             this.FindControl<TextBox>("NoteText")?.Focus();
         };
         Closing += (_, _) => SaveGeometry();
@@ -61,8 +64,9 @@ public partial class NoteWindow : Window
         var noteText = this.FindControl<TextBox>("NoteText")!;
         if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
         {
-            noteText.CaretIndex = 0;
-            noteText.Focus();
+            var tagText = this.FindControl<TextBox>("TagText")!;
+            tagText.CaretIndex = tagText.Text?.Length ?? 0;
+            tagText.Focus();
             e.Handled = true;
         }
         else if (e.Key == Key.Enter)
@@ -80,13 +84,24 @@ public partial class NoteWindow : Window
         }
     }
 
+    private void TagText_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            this.FindControl<TextBox>("NoteText")!.Focus();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
+        {
+            this.FindControl<TextBox>("TagText")!.Focus();
+            e.Handled = true;
+        }
+    }
+
     private void AddTagMenuItem_OnClick(object? sender, RoutedEventArgs e)
     {
-        var noteText = this.FindControl<TextBox>("NoteText")!;
-        if (!(noteText.Text ?? string.Empty).Contains(" - ", StringComparison.Ordinal))
-            noteText.Text = $" - {noteText.Text}";
-        noteText.CaretIndex = 0;
-        noteText.Focus();
+        var tagText = this.FindControl<TextBox>("TagText")!;
+        tagText.Focus();
     }
 
     private void CopyMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
@@ -112,12 +127,28 @@ public partial class NoteWindow : Window
 
     private void AppendAndClose()
     {
+        var tag = this.FindControl<TextBox>("TagText")?.Text?.Trim();
         var text = this.FindControl<TextBox>("NoteText")?.Text?.Trim();
         if (!string.IsNullOrWhiteSpace(text))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
-            File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} | {text}{Environment.NewLine}");
+            File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}{Environment.NewLine}");
         }
         Close();
+    }
+
+    private string LoadLastTag()
+    {
+        try
+        {
+            if (!File.Exists(_notesPath)) return string.Empty;
+            var lastLine = File.ReadLines(_notesPath).LastOrDefault(line => !string.IsNullOrWhiteSpace(line));
+            if (lastLine is null) return string.Empty;
+            var separator = lastLine.IndexOf(" - ", StringComparison.Ordinal);
+            if (separator < 0) return string.Empty;
+            var noteStart = lastLine.IndexOf(" - ", separator + 3, StringComparison.Ordinal);
+            return noteStart > separator ? lastLine[(separator + 3)..noteStart].Trim() : string.Empty;
+        }
+        catch { return string.Empty; }
     }
 }

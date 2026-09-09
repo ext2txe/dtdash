@@ -2,18 +2,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Dtdash.NoteWindow"
         Icon="/redicon.png"
-        Width="420" Height="80"
-        MinWidth="300" MinHeight="60"
+        Width="420" Height="120"
+        MinWidth="300" MinHeight="80"
         SystemDecorations="None"
         CanResize="True"
         ShowInTaskbar="False">
   <Border BorderBrush="Gray" BorderThickness="1" Background="{DynamicResource ThemeBackgroundBrush}">
     <Grid Margin="8">
-      <TextBox Name="NoteText"
-               AcceptsReturn="False"
-               TextWrapping="NoWrap"
-               Watermark="Enter note"
-               KeyDown="NoteText_OnKeyDown">
+      <Grid RowDefinitions="Auto,*" RowSpacing="4">
+        <TextBox Name="TagText"
+                 Watermark="Tag"
+                 KeyDown="TagText_OnKeyDown" />
+        <TextBox Name="NoteText"
+                 Grid.Row="1"
+                 AcceptsReturn="False"
+                 TextWrapping="NoWrap"
+                 Watermark="Enter note"
+                 KeyDown="NoteText_OnKeyDown">
         <TextBox.ContextMenu>
           <ContextMenu>
             <MenuItem Header="Add tag" Click="AddTagMenuItem_OnClick" />
@@ -26,7 +31,8 @@
             <MenuItem Header="Cancel (Shift+Esc)" Click="CancelMenuItem_OnClick" />
           </ContextMenu>
         </TextBox.ContextMenu>
-      </TextBox>
+        </TextBox>
+      </Grid>
     </Grid>
   </Border>
 </Window>
