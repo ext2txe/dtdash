@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.41 — 2026-09-09 10:06
+
+- Escape closes the quick-edit window when focus is in the Tag field.
+
 ## 0.1.38 — 2026-09-09 08:22
 
 - Applies `StartMinimized` after the main window opens, allowing the startup window to lay out its controls correctly before minimizing.

@@ -96,6 +96,11 @@ public partial class NoteWindow : Window
             this.FindControl<TextBox>("TagText")!.Focus();
             e.Handled = true;
         }
+        else if (e.Key == Key.Escape)
+        {
+            Close();
+            e.Handled = true;
+        }
     }
 
     private void AddTagMenuItem_OnClick(object? sender, RoutedEventArgs e)
