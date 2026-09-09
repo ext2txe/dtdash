@@ -11,7 +11,13 @@
       </Grid>
     </Border>
 
-    <ListBox Name="NotesList" Grid.Row="1" Margin="24,0,24,12" />
+    <ListBox Name="NotesList" Grid.Row="1" Margin="24,0,24,12">
+      <ListBox.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Copy note" Click="CopyNoteMenuItem_OnClick" />
+        </ContextMenu>
+      </ListBox.ContextMenu>
+    </ListBox>
 
     <Border Grid.Row="2" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1,1,0,0" Padding="8,4">
       <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" VerticalAlignment="Center">

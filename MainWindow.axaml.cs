@@ -129,6 +129,12 @@ public partial class MainWindow : Window
 
     private void NoteButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => OpenNoteWindow();
 
+    private async void CopyNoteMenuItem_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (NotesList.SelectedItem is string note && TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(note);
+    }
+
     private static string ResolveNotesPath(string configPath)
     {
         var settings = SettingsStore.Load(configPath);

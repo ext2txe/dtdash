@@ -1,6 +1,10 @@
 # Features
 
-## 0.1.43 — 2026-09-09 10:08
+## 0.1.44 — 2026-09-09 16:08
+
+- Adds a notes-list context-menu action to copy the selected note to the clipboard.
+
+## 0.1.43 — 2026-09-09 16:08
 
 - Displays captured notes one per line in reverse chronological order and refreshes the list as the notes file changes; reserves a header area for future search and option controls.
 
