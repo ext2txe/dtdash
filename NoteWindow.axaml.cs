@@ -10,15 +10,17 @@ public partial class NoteWindow : Window
 {
     private readonly string _notesPath;
     private readonly string _geometryPath;
+    private readonly bool _sticky;
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json")) { }
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
 
-    public NoteWindow(string notesPath, string geometryPath)
+    public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
+        _sticky = sticky;
         InitializeComponent();
         Opened += (_, _) =>
         {
@@ -26,9 +28,14 @@ public partial class NoteWindow : Window
             var tagText = this.FindControl<TextBox>("TagText");
             if (tagText is not null)
                 tagText.Text = LoadLastTag();
+            this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked = _sticky;
             this.FindControl<TextBox>("NoteText")?.Focus();
         };
-        Closing += (_, _) => SaveGeometry();
+        Closing += (_, _) =>
+        {
+            this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked = _sticky;
+            SaveGeometry();
+        };
         PointerPressed += NoteWindow_OnPointerPressed;
     }
 
@@ -139,6 +146,14 @@ public partial class NoteWindow : Window
             Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
             File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}{Environment.NewLine}");
         }
+
+        if (this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true)
+        {
+            this.FindControl<TextBox>("NoteText")!.Clear();
+            this.FindControl<TextBox>("NoteText")!.Focus();
+            return;
+        }
+
         Close();
     }
 

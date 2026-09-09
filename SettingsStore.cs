@@ -54,6 +54,13 @@ public static class SettingsStore
             "Application",
             1,
             "Start dtdash minimized.")
+        ,new(
+            "Sticky Quicke Edit window",
+            "false",
+            "false",
+            "Application",
+            2,
+            "Keep the quick edit window open after saving a note.")
     ];
 
     public static void Save(string configPath, IEnumerable<SettingEntry> settings)

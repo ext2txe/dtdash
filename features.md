@@ -1,6 +1,18 @@
 # Features
 
-## 0.1.44 — 2026-09-09 16:08
+## 0.1.47 — 2026-09-09 16:20
+
+- Resets the quick-edit Sticky checkbox to its persisted setting when the window closes, including via Escape.
+
+## 0.1.46 — 2026-09-09 16:20
+
+- Fixes Sticky quick edit so Enter keeps the window open whenever the Sticky checkbox is checked.
+
+## 0.1.45 — 2026-09-09 16:20
+
+- Adds the persistent `Sticky Quicke Edit window` setting and Sticky checkbox; enabled quick edits save, clear, and remain open for the next entry.
+
+## 0.1.44 — 2026-09-09 16:20
 
 - Adds a notes-list context-menu action to copy the selected note to the clipboard.
 

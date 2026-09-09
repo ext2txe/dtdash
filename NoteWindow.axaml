@@ -10,9 +10,12 @@
   <Border BorderBrush="Gray" BorderThickness="1" Background="{DynamicResource ThemeBackgroundBrush}">
     <Grid Margin="8">
       <Grid RowDefinitions="Auto,*" RowSpacing="4">
-        <TextBox Name="TagText"
-                 Watermark="Tag"
-                 KeyDown="TagText_OnKeyDown" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Name="TagText"
+                   Watermark="Tag"
+                   KeyDown="TagText_OnKeyDown" />
+          <CheckBox Name="StickyCheckBox" Grid.Column="1" Content="Sticky" Margin="8,0,0,0" VerticalAlignment="Center" />
+        </Grid>
         <TextBox Name="NoteText"
                  Grid.Row="1"
                  AcceptsReturn="False"

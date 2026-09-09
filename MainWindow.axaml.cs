@@ -169,7 +169,8 @@ public partial class MainWindow : Window
 
         _noteWindow = new NoteWindow(
             _notesPath,
-            Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"))
+            Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
+            IsStickyQuickEditEnabled())
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
@@ -247,6 +248,9 @@ public partial class MainWindow : Window
     {
         return IsShiftPressed();
     }
+
+    private bool IsStickyQuickEditEnabled() =>
+        bool.TryParse(SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "Sticky Quicke Edit window")?.Value, out var sticky) && sticky;
 
     private static bool IsShiftPressed()
     {
