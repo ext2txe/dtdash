@@ -18,8 +18,8 @@ public static class AppEventLog
     public static void WriteStartup(string configPath)
     {
         var logPath = GetLogPath(configPath);
-        Write(logPath,
-            "Application started",
+        Write(logPath, false,
+            $"Application started (version {GetVersion()})",
             $"Executable: {Environment.ProcessPath ?? AppContext.BaseDirectory}",
             $"Current log: {logPath}",
             $"Configuration: {configPath}",
@@ -28,18 +28,23 @@ public static class AppEventLog
     }
 
     public static void WriteShutdown(string configPath) =>
-        Write(GetLogPath(configPath), "Application shut down");
+        Write(GetLogPath(configPath), true, $"Application shut down (version {GetVersion()})");
 
     public static void WriteGeometryIssue(string configPath, string message) =>
-        Write(GetLogPath(configPath), message);
+        Write(GetLogPath(configPath), false, message);
 
-    private static void Write(string logPath, params string[] entries)
+    private static string GetVersion() =>
+        typeof(App).Assembly.GetName().Version?.ToString(3) ?? "unknown";
+
+    private static void Write(string logPath, bool sessionSeparator, params string[] entries)
     {
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(logPath)!);
             var lines = entries.Select(entry => $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {entry}");
             File.AppendAllLines(logPath, lines);
+            if (sessionSeparator)
+                File.AppendAllText(logPath, Environment.NewLine);
         }
         catch
         {

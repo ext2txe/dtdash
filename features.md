@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.42 — 2026-09-09 10:07
+
+- Includes the application version in startup and shutdown log entries, logs shutdown on application exit, and adds a blank line between sessions.
+
 ## 0.1.41 — 2026-09-09 10:06
 
 - Escape closes the quick-edit window when focus is in the Tag field.
