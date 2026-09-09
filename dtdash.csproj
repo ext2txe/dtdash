@@ -6,9 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>redicon.ico</ApplicationIcon>
-    <Version>0.1.34</Version>
-    <AssemblyVersion>0.1.34.0</AssemblyVersion>
-    <FileVersion>0.1.34.0</FileVersion>
+    <Version>0.1.36</Version>
+    <AssemblyVersion>0.1.36.0</AssemblyVersion>
+    <FileVersion>0.1.36.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.14" />
@@ -20,4 +20,25 @@
     <None Include="redicon.png" CopyToOutputDirectory="PreserveNewest" />
     <None Include="redicon.ico" />
   </ItemGroup>
+
+  <Target Name="CreateMacAppBundle" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <ItemGroup>
+      <MacBundleFiles Include="$(TargetDir)**" Exclude="$(TargetDir)dtdash.app/**" />
+    </ItemGroup>
+    <MakeDir Directories="$(TargetDir)dtdash.app/Contents/MacOS;$(TargetDir)dtdash.app/Contents/Resources;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset" />
+    <Copy SourceFiles="@(MacBundleFiles)" DestinationFolder="$(TargetDir)dtdash.app/Contents/MacOS/%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ProjectDir)MacInfo.plist" DestinationFiles="$(TargetDir)dtdash.app/Contents/Info.plist" />
+    <Copy SourceFiles="$(ProjectDir)redicon.png" DestinationFiles="$(TargetDir)dtdash.app/Contents/Resources/redicon.png" SkipUnchangedFiles="true" />
+    <Exec Command="sips -z 16 16 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_16x16.png&quot;" />
+    <Exec Command="sips -z 32 32 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_16x16@2x.png&quot;" />
+    <Exec Command="sips -z 32 32 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_32x32.png&quot;" />
+    <Exec Command="sips -z 64 64 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_32x32@2x.png&quot;" />
+    <Exec Command="sips -z 128 128 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_128x128.png&quot;" />
+    <Exec Command="sips -z 256 256 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_128x128@2x.png&quot;" />
+    <Exec Command="sips -z 256 256 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_256x256.png&quot;" />
+    <Exec Command="sips -z 512 512 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_256x256@2x.png&quot;" />
+    <Exec Command="sips -z 512 512 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_512x512.png&quot;" />
+    <Exec Command="sips -z 1024 1024 &quot;$(ProjectDir)redicon.png&quot; --out &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset/icon_512x512@2x.png&quot;" />
+    <Exec Command="iconutil -c icns &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.iconset&quot; -o &quot;$(TargetDir)dtdash.app/Contents/Resources/redicon.icns&quot;" />
+  </Target>
 </Project>

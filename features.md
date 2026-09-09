@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.36 — 2026-09-09 08:16
+
+- Generates a native `redicon.icns` for the macOS app bundle so Dock entries use the dtdash icon.
+
+## 0.1.35 — 2026-09-09 08:04
+
+- Builds a macOS `dtdash.app` bundle that declares `redicon.png` as the Dock icon.
+
 ## 0.1.34 — 2026-09-09 07:58
 
 - Applies the `redicon.png` macOS dock icon after the main application window opens.

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleDisplayName</key>
+  <string>dtdash</string>
+  <key>CFBundleExecutable</key>
+  <string>dtdash</string>
+  <key>CFBundleIconFile</key>
+  <string>redicon.icns</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.dtdash.app</string>
+  <key>CFBundleName</key>
+  <string>dtdash</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleShortVersionString</key>
+  <string>0.1.35</string>
+  <key>CFBundleVersion</key>
+  <string>0.1.35</string>
+</dict>
+</plist>
