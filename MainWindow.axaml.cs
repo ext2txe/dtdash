@@ -39,8 +39,15 @@ public partial class MainWindow : Window
             if (ShouldStartMinimized())
                 Dispatcher.UIThread.Post(() => WindowState = WindowState.Minimized);
         };
-        Closing += (_, _) =>
+        Closing += (_, e) =>
         {
+            if (!IsShiftPressed())
+            {
+                e.Cancel = true;
+                WindowState = WindowState.Minimized;
+                return;
+            }
+
             _clockTimer.Stop();
             _noteWindow?.Close();
             _settingsWindow?.Close();
@@ -193,6 +200,11 @@ public partial class MainWindow : Window
     private sealed record WindowGeometry(int X, int Y, double Width, double Height);
 
     private static bool IsShiftPressedAtStartup()
+    {
+        return IsShiftPressed();
+    }
+
+    private static bool IsShiftPressed()
     {
         if (OperatingSystem.IsWindows())
             return (GetAsyncKeyState(ShiftKey) & 0x8000) != 0;
