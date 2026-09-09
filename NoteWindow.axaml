@@ -5,7 +5,7 @@
         Width="420" Height="80"
         MinWidth="300" MinHeight="60"
         SystemDecorations="None"
-        CanResize="False"
+        CanResize="True"
         ShowInTaskbar="False">
   <Border BorderBrush="Gray" BorderThickness="1" Background="{DynamicResource ThemeBackgroundBrush}">
     <Grid Margin="8">
@@ -16,6 +16,12 @@
                KeyDown="NoteText_OnKeyDown">
         <TextBox.ContextMenu>
           <ContextMenu>
+            <MenuItem Header="Add tag" Click="AddTagMenuItem_OnClick" />
+            <Separator />
+            <MenuItem Header="Copy" Click="CopyMenuItem_OnClick" />
+            <MenuItem Header="Paste" Click="PasteMenuItem_OnClick" />
+            <MenuItem Header="Cut" Click="CutMenuItem_OnClick" />
+            <Separator />
             <MenuItem Header="Clear (Esc)" Click="ClearMenuItem_OnClick" />
             <MenuItem Header="Cancel (Shift+Esc)" Click="CancelMenuItem_OnClick" />
           </ContextMenu>

@@ -1,5 +1,17 @@
 # Features
 
+## 0.1.34 — 2026-09-09 07:58
+
+- Applies the `redicon.png` macOS dock icon after the main application window opens.
+
+## 0.1.33 — 2026-09-09 07:56
+
+- Adds Alt+T to move the quick note caret to the start, an optional `tag - note` entry format, and context-menu actions for adding a tag, copying, pasting, and cutting.
+
+## 0.1.32 — 2026-09-09 07:49
+
+- Makes the quick note window resizable and closes it on Escape when the text is empty; Escape clears non-empty text.
+
 ## 0.1.31 — 2026-09-08 23:00
 
 - Replaces Quick Edit Clear and Cancel buttons with context-menu actions, using Esc and Shift+Esc as their keyboard shortcuts, and reduces the window height.

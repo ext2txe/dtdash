@@ -58,18 +58,45 @@ public partial class NoteWindow : Window
 
     private void NoteText_OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        var noteText = this.FindControl<TextBox>("NoteText")!;
+        if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
+        {
+            noteText.CaretIndex = 0;
+            noteText.Focus();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Enter)
         {
             AppendAndClose();
             e.Handled = true;
         }
         else if (e.Key == Key.Escape)
         {
-            this.FindControl<TextBox>("NoteText")!.Clear();
-            if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift) Close();
+            if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift || string.IsNullOrEmpty(noteText.Text))
+                Close();
+            else
+                noteText.Clear();
             e.Handled = true;
         }
     }
+
+    private void AddTagMenuItem_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var noteText = this.FindControl<TextBox>("NoteText")!;
+        if (!(noteText.Text ?? string.Empty).Contains(" - ", StringComparison.Ordinal))
+            noteText.Text = $" - {noteText.Text}";
+        noteText.CaretIndex = 0;
+        noteText.Focus();
+    }
+
+    private void CopyMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
+        this.FindControl<TextBox>("NoteText")!.Copy();
+
+    private void PasteMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
+        this.FindControl<TextBox>("NoteText")!.Paste();
+
+    private void CutMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
+        this.FindControl<TextBox>("NoteText")!.Cut();
 
     private void ClearMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
         this.FindControl<TextBox>("NoteText")!.Clear();

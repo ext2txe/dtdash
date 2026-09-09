@@ -20,7 +20,7 @@ public partial class App : Application
             AppEventLog.WriteStartup(configPath);
             desktop.ShutdownRequested += (_, _) => AppEventLog.WriteShutdown(configPath);
             desktop.MainWindow = new MainWindow(configPath);
-            MacApplicationIcon.Set();
+            desktop.MainWindow.Opened += (_, _) => MacApplicationIcon.Set();
             Action openNote = () =>
                 Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                 {
