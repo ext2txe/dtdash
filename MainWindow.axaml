@@ -3,13 +3,17 @@
         x:Class="Dtdash.MainWindow"
         Icon="/redicon.png"
         Width="900" Height="600" MinWidth="400" MinHeight="300">
-  <Grid RowDefinitions="*,Auto">
-    <StackPanel Grid.Row="0" Margin="24" Spacing="12">
-      <TextBlock Text="DTDash" FontSize="28" />
-      <TextBlock Name="ConfigText" />
-    </StackPanel>
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Border Grid.Row="0" Margin="24,24,24,12" Padding="12" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Text="Notes" FontSize="22" VerticalAlignment="Center" />
+        <!-- Reserved for future search and option buttons. -->
+      </Grid>
+    </Border>
 
-    <Border Grid.Row="1" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1,1,0,0" Padding="8,4">
+    <ListBox Name="NotesList" Grid.Row="1" Margin="24,0,24,12" />
+
+    <Border Grid.Row="2" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1,1,0,0" Padding="8,4">
       <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" VerticalAlignment="Center">
         <TextBlock Name="StatusText" Grid.Column="0" VerticalAlignment="Center" />
         <Button Name="NoteButton" Grid.Column="1" Content="Note" Padding="8,2" Margin="8,0,4,0" ToolTip.Tip="Add note" Click="NoteButton_OnClick" />

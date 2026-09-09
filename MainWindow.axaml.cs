@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -16,6 +17,9 @@ public partial class MainWindow : Window
     private const ulong ShiftModifierFlag = 0x00020000;
     private const short ShiftKey = 0x10;
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private readonly ObservableCollection<string> _notes = new();
+    private readonly FileSystemWatcher _notesWatcher;
+    private readonly string _notesPath;
     private SettingsWindow? _settingsWindow;
     private NoteWindow? _noteWindow;
 
@@ -24,8 +28,20 @@ public partial class MainWindow : Window
     public MainWindow(string configPath)
     {
         _configPath = configPath;
+        _notesPath = ResolveNotesPath(configPath);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
+        NotesList.ItemsSource = _notes;
+        Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
+        _notesWatcher = new FileSystemWatcher(Path.GetDirectoryName(_notesPath)!, Path.GetFileName(_notesPath))
+        {
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size,
+            EnableRaisingEvents = true
+        };
+        _notesWatcher.Changed += NotesFileChanged;
+        _notesWatcher.Created += NotesFileChanged;
+        _notesWatcher.Renamed += NotesFileChanged;
+        LoadNotes();
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
@@ -49,6 +65,7 @@ public partial class MainWindow : Window
             }
 
             _clockTimer.Stop();
+            _notesWatcher.Dispose();
             _noteWindow?.Close();
             _settingsWindow?.Close();
             SaveGeometry();
@@ -112,6 +129,30 @@ public partial class MainWindow : Window
 
     private void NoteButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => OpenNoteWindow();
 
+    private static string ResolveNotesPath(string configPath)
+    {
+        var settings = SettingsStore.Load(configPath);
+        return settings.FirstOrDefault(s => s.Name == "PathToNotes")?.Value
+            ?? settings.First(s => s.Name == "PathToNotes").DefaultValue;
+    }
+
+    private void NotesFileChanged(object? sender, FileSystemEventArgs e) =>
+        Dispatcher.UIThread.Post(LoadNotes);
+
+    private void LoadNotes()
+    {
+        try
+        {
+            var notes = File.Exists(_notesPath)
+                ? File.ReadLines(_notesPath).Where(line => !string.IsNullOrWhiteSpace(line)).Reverse().ToArray()
+                : Array.Empty<string>();
+            _notes.Clear();
+            foreach (var note in notes)
+                _notes.Add(note);
+        }
+        catch { }
+    }
+
     public void OpenNoteWindow(bool useMainWindowAsOwner = true)
     {
         if (_noteWindow is not null)
@@ -120,11 +161,8 @@ public partial class MainWindow : Window
             return;
         }
 
-        var settings = SettingsStore.Load(_configPath);
-        var notesPath = settings.FirstOrDefault(s => s.Name == "PathToNotes")?.Value
-            ?? SettingsStore.Load(_configPath).First(s => s.Name == "PathToNotes").DefaultValue;
         _noteWindow = new NoteWindow(
-            notesPath,
+            _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"))
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;

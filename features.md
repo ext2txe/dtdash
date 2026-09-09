@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.43 — 2026-09-09 10:08
+
+- Displays captured notes one per line in reverse chronological order and refreshes the list as the notes file changes; reserves a header area for future search and option controls.
+
 ## 0.1.42 — 2026-09-09 10:07
 
 - Includes the application version in startup and shutdown log entries, logs shutdown on application exit, and adds a blank line between sessions.
