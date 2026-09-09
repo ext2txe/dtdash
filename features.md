@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.37 — 2026-09-09 08:20
+
+- Adds the `StartMinimized` configuration setting, defaulting to `true`, and starts the main window minimized when enabled.
+
 ## 0.1.36 — 2026-09-09 08:16
 
 - Generates a native `redicon.icns` for the macOS app bundle so Dock entries use the dtdash icon.

@@ -27,6 +27,8 @@ public partial class MainWindow : Window
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
+        if (ShouldStartMinimized())
+            WindowState = WindowState.Minimized;
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
             text.Text = $"Configuration: {_configPath}";
         SetStatus("Ready");
@@ -72,6 +74,12 @@ public partial class MainWindow : Window
     {
         if (this.FindControl<TextBlock>("ClockText") is { } text)
             text.Text = DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    private bool ShouldStartMinimized()
+    {
+        var setting = SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "StartMinimized");
+        return setting is null || !bool.TryParse(setting.Value, out var startMinimized) || startMinimized;
     }
 
     private async void SettingsButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

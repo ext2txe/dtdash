@@ -17,26 +17,44 @@ public static class SettingsStore
             if (File.Exists(path))
             {
                 var settings = JsonSerializer.Deserialize<List<SettingEntry>>(File.ReadAllText(path));
-                if (settings is not null && settings.Count > 0) return settings;
+                if (settings is not null && settings.Count > 0)
+                {
+                    var startMinimized = DefaultSettings().First(s => s.Name == "StartMinimized");
+                    if (settings.All(s => s.Name != startMinimized.Name))
+                    {
+                        settings.Add(startMinimized);
+                        Save(configPath, settings);
+                    }
+                    return settings;
+                }
             }
         }
         catch
         {
         }
 
-        var defaults = new List<SettingEntry>
-        {
-            new(
-                "PathToNotes",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
-                "Notes",
-                1,
-                "Location and name of the file used to save notes.")
-        };
+        var defaults = DefaultSettings();
         Save(configPath, defaults);
         return defaults;
     }
+
+    private static List<SettingEntry> DefaultSettings() =>
+    [
+        new(
+            "PathToNotes",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
+            "Notes",
+            1,
+            "Location and name of the file used to save notes."),
+        new(
+            "StartMinimized",
+            "true",
+            "true",
+            "Application",
+            1,
+            "Start dtdash minimized.")
+    ];
 
     public static void Save(string configPath, IEnumerable<SettingEntry> settings)
     {
