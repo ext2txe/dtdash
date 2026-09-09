@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.50 — 2026-09-09 23:25
+
+- Fixes startup with existing settings files by migrating all newly added default settings.
+
+## 0.1.49 — 2026-09-09 22:55
+
+- Adds the opt-in `USE_SCHEMA` SQLite notes store and configurable SQLite database path; text-file storage remains the default.
+
 ## 0.1.48 — 2026-09-09 22:48
 
 - Places the Sticky checkbox last in the quick-edit tab sequence.

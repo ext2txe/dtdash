@@ -19,10 +19,12 @@ public static class SettingsStore
                 var settings = JsonSerializer.Deserialize<List<SettingEntry>>(File.ReadAllText(path));
                 if (settings is not null && settings.Count > 0)
                 {
-                    var startMinimized = DefaultSettings().First(s => s.Name == "StartMinimized");
-                    if (settings.All(s => s.Name != startMinimized.Name))
+                    var defaultSettings = DefaultSettings();
+                    var missingDefaults = defaultSettings.Where(defaultSetting =>
+                        settings.All(setting => setting.Name != defaultSetting.Name)).ToArray();
+                    if (missingDefaults.Length > 0)
                     {
-                        settings.Add(startMinimized);
+                        settings.AddRange(missingDefaults);
                         Save(configPath, settings);
                     }
                     return settings;
@@ -47,6 +49,20 @@ public static class SettingsStore
             "Notes",
             1,
             "Location and name of the file used to save notes."),
+        new(
+            "SqlitePath",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.db"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.db"),
+            "Notes",
+            2,
+            "Location and name of the SQLite database used when USE_SCHEMA is true."),
+        new(
+            "USE_SCHEMA",
+            "false",
+            "false",
+            "Notes",
+            3,
+            "Use the SQLite notes store instead of the text file store."),
         new(
             "StartMinimized",
             "true",

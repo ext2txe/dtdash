@@ -18,8 +18,9 @@ public partial class MainWindow : Window
     private const short ShiftKey = 0x10;
     private readonly DispatcherTimer _clockTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly ObservableCollection<string> _notes = new();
-    private readonly FileSystemWatcher _notesWatcher;
+    private readonly FileSystemWatcher? _notesWatcher;
     private readonly string _notesPath;
+    private readonly NoteStore _noteStore;
     private SettingsWindow? _settingsWindow;
     private NoteWindow? _noteWindow;
 
@@ -29,18 +30,24 @@ public partial class MainWindow : Window
     {
         _configPath = configPath;
         _notesPath = ResolveNotesPath(configPath);
+        var settings = SettingsStore.Load(configPath);
+        var useSchema = bool.TryParse(settings.FirstOrDefault(s => s.Name == "USE_SCHEMA")?.Value, out var schema) && schema;
+        _noteStore = new NoteStore(ResolveSqlitePath(settings), useSchema);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         NotesList.ItemsSource = _notes;
-        Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
-        _notesWatcher = new FileSystemWatcher(Path.GetDirectoryName(_notesPath)!, Path.GetFileName(_notesPath))
+        if (!_noteStore.UseSchema)
         {
-            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size,
-            EnableRaisingEvents = true
-        };
-        _notesWatcher.Changed += NotesFileChanged;
-        _notesWatcher.Created += NotesFileChanged;
-        _notesWatcher.Renamed += NotesFileChanged;
+            Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
+            _notesWatcher = new FileSystemWatcher(Path.GetDirectoryName(_notesPath)!, Path.GetFileName(_notesPath))
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size,
+                EnableRaisingEvents = true
+            };
+            _notesWatcher.Changed += NotesFileChanged;
+            _notesWatcher.Created += NotesFileChanged;
+            _notesWatcher.Renamed += NotesFileChanged;
+        }
         LoadNotes();
         Title = $"dtDash {typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19"}";
         if (this.FindControl<TextBlock>("ConfigText") is { } text)
@@ -65,7 +72,7 @@ public partial class MainWindow : Window
             }
 
             _clockTimer.Stop();
-            _notesWatcher.Dispose();
+            _notesWatcher?.Dispose();
             _noteWindow?.Close();
             _settingsWindow?.Close();
             SaveGeometry();
@@ -142,6 +149,10 @@ public partial class MainWindow : Window
             ?? settings.First(s => s.Name == "PathToNotes").DefaultValue;
     }
 
+    private static string ResolveSqlitePath(List<SettingsStore.SettingEntry> settings) =>
+        settings.FirstOrDefault(s => s.Name == "SqlitePath")?.Value
+        ?? settings.First(s => s.Name == "SqlitePath").DefaultValue;
+
     private void NotesFileChanged(object? sender, FileSystemEventArgs e) =>
         Dispatcher.UIThread.Post(LoadNotes);
 
@@ -149,9 +160,11 @@ public partial class MainWindow : Window
     {
         try
         {
-            var notes = File.Exists(_notesPath)
-                ? File.ReadLines(_notesPath).Where(line => !string.IsNullOrWhiteSpace(line)).Reverse().ToArray()
-                : Array.Empty<string>();
+            var notes = _noteStore.UseSchema
+                ? _noteStore.Load().Select(n => $"{n.CreatedAt.ToLocalTime():yyyyMMdd HH:mm:ss} - {n.Tag} - {n.Text}").ToArray()
+                : File.Exists(_notesPath)
+                    ? File.ReadLines(_notesPath).Where(line => !string.IsNullOrWhiteSpace(line)).Reverse().ToArray()
+                    : Array.Empty<string>();
             _notes.Clear();
             foreach (var note in notes)
                 _notes.Add(note);
@@ -170,7 +183,8 @@ public partial class MainWindow : Window
         _noteWindow = new NoteWindow(
             _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
-            IsStickyQuickEditEnabled())
+            IsStickyQuickEditEnabled(),
+            _noteStore)
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)

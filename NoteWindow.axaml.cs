@@ -11,16 +11,18 @@ public partial class NoteWindow : Window
     private readonly string _notesPath;
     private readonly string _geometryPath;
     private readonly bool _sticky;
+    private readonly NoteStore? _noteStore;
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
 
-    public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
+    public NoteWindow(string notesPath, string geometryPath, bool sticky = false, NoteStore? noteStore = null)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
         _sticky = sticky;
+        _noteStore = noteStore;
         InitializeComponent();
         Opened += (_, _) =>
         {
@@ -143,8 +145,13 @@ public partial class NoteWindow : Window
         var text = this.FindControl<TextBox>("NoteText")?.Text?.Trim();
         if (!string.IsNullOrWhiteSpace(text))
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
-            File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}{Environment.NewLine}");
+            if (_noteStore?.UseSchema == true)
+                _noteStore.Add(tag, text);
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
+                File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}{Environment.NewLine}");
+            }
         }
 
         if (this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true)
@@ -161,6 +168,7 @@ public partial class NoteWindow : Window
     {
         try
         {
+            if (_noteStore?.UseSchema == true) return _noteStore.LoadLastTag() ?? string.Empty;
             if (!File.Exists(_notesPath)) return string.Empty;
             var lastLine = File.ReadLines(_notesPath).LastOrDefault(line => !string.IsNullOrWhiteSpace(line));
             if (lastLine is null) return string.Empty;
