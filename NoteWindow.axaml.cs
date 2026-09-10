@@ -149,7 +149,8 @@ public partial class NoteWindow : Window
         if (!string.IsNullOrWhiteSpace(text))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
-            File.AppendAllText(_notesPath, $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}{Environment.NewLine}");
+            var line = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}";
+            File.AppendAllText(_notesPath, $"{(IsObsidianNotesFile() ? "- " : string.Empty)}{line}{Environment.NewLine}");
         }
 
         if (this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true)
@@ -169,6 +170,9 @@ public partial class NoteWindow : Window
             if (!File.Exists(_notesPath)) return string.Empty;
             var lastLine = File.ReadLines(_notesPath).LastOrDefault(line => !string.IsNullOrWhiteSpace(line));
             if (lastLine is null) return string.Empty;
+            lastLine = IsObsidianNotesFile() && lastLine.TrimStart().StartsWith("- ")
+                ? lastLine.TrimStart()[2..]
+                : lastLine;
             var separator = lastLine.IndexOf(" - ", StringComparison.Ordinal);
             if (separator < 0) return string.Empty;
             var noteStart = lastLine.IndexOf(" - ", separator + 3, StringComparison.Ordinal);
@@ -176,4 +180,7 @@ public partial class NoteWindow : Window
         }
         catch { return string.Empty; }
     }
+
+    private bool IsObsidianNotesFile() =>
+        _notesPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase);
 }

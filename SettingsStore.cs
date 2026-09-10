@@ -9,6 +9,27 @@ public static class SettingsStore
     public static string GetPath(string configPath) =>
         Path.Combine(Path.GetDirectoryName(configPath)!, "settings.json");
 
+    public static string ResolveActiveNotesPath(string configPath, DateTime date)
+    {
+        var settings = Load(configPath);
+        var standardPath = settings.First(s => s.Name == "PathToNotes").Value;
+        var obsidianEnabled = bool.TryParse(
+            settings.FirstOrDefault(s => s.Name == "Obsidian Enabled")?.Value,
+            out var enabled) && enabled;
+        if (!obsidianEnabled)
+            return standardPath;
+
+        var folder = settings.FirstOrDefault(s => s.Name == "Obsidian Quick Notes Folder")?.Value
+            ?? "__INBOX.Quick Notes";
+        var vaultFolder = Path.IsPathRooted(folder)
+            ? folder
+            : Path.Combine(Path.GetDirectoryName(standardPath)!, folder);
+        return Path.Combine(vaultFolder, $"{date:yyyy-MM-dd}.md");
+    }
+
+    public static bool IsObsidianEnabled(string configPath) =>
+        bool.TryParse(Load(configPath).FirstOrDefault(s => s.Name == "Obsidian Enabled")?.Value, out var enabled) && enabled;
+
     public static List<SettingEntry> Load(string configPath)
     {
         var path = GetPath(configPath);
@@ -67,6 +88,20 @@ public static class SettingsStore
             "Application",
             2,
             "Keep the quick edit window open after saving a note.")
+        ,new(
+            "Obsidian Enabled",
+            "false",
+            "false",
+            "Application",
+            3,
+            "Enable storing quick notes in Obsidian daily note files.")
+        ,new(
+            "Obsidian Quick Notes Folder",
+            "__INBOX.Quick Notes",
+            "__INBOX.Quick Notes",
+            "Application",
+            4,
+            "Folder name for Obsidian quick notes within the configured vault.")
     ];
 
     public static void Save(string configPath, IEnumerable<SettingEntry> settings)

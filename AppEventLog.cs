@@ -24,7 +24,9 @@ public static class AppEventLog
             $"Current log: {logPath}",
             $"Configuration: {configPath}",
             $"Settings: {GetSettingsPath(configPath)}",
-            $"Settings geometry: {GetSettingsGeometryPath(configPath)}");
+            $"Settings geometry: {GetSettingsGeometryPath(configPath)}",
+            $"Obsidian enabled: {SettingsStore.IsObsidianEnabled(configPath)}",
+            $"Obsidian daily file: {SettingsStore.ResolveActiveNotesPath(configPath, DateTime.Now)}");
     }
 
     public static void WriteShutdown(string configPath) =>

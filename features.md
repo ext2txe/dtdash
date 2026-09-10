@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.53 — 2026-09-10 07:55
+
+- Uses the current Obsidian daily Markdown file for loading, watching, and saving quick notes when Obsidian is enabled, and logs the enabled state and resolved daily-file path at startup.
+
+## 0.1.52 — 2026-09-10 07:51
+
+- Adds persistent settings to enable Obsidian quick-note storage and configure its quick-notes folder name; storage behavior is not yet enabled.
+
 ## 0.1.51 — 2026-09-10 07:27
 
 - Persists changes to the Sticky setting made in the quick-edit window.

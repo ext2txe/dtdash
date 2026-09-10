@@ -28,7 +28,7 @@ public partial class MainWindow : Window
     public MainWindow(string configPath)
     {
         _configPath = configPath;
-        _notesPath = ResolveNotesPath(configPath);
+        _notesPath = SettingsStore.ResolveActiveNotesPath(configPath, DateTime.Now);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
         NotesList.ItemsSource = _notes;
@@ -140,13 +140,6 @@ public partial class MainWindow : Window
             await clipboard.SetTextAsync(note);
     }
 
-    private static string ResolveNotesPath(string configPath)
-    {
-        var settings = SettingsStore.Load(configPath);
-        return settings.FirstOrDefault(s => s.Name == "PathToNotes")?.Value
-            ?? settings.First(s => s.Name == "PathToNotes").DefaultValue;
-    }
-
     private void NotesFileChanged(object? sender, FileSystemEventArgs e) =>
         Dispatcher.UIThread.Post(LoadNotes);
 
@@ -155,7 +148,13 @@ public partial class MainWindow : Window
         try
         {
             var notes = File.Exists(_notesPath)
-                ? File.ReadLines(_notesPath).Where(line => !string.IsNullOrWhiteSpace(line)).Reverse().ToArray()
+                ? File.ReadLines(_notesPath)
+                    .Where(line => !string.IsNullOrWhiteSpace(line))
+                    .Select(line => IsObsidianNotesFile() && line.TrimStart().StartsWith("- ")
+                        ? line.TrimStart()[2..]
+                        : line)
+                    .Reverse()
+                    .ToArray()
                 : Array.Empty<string>();
             _notes.Clear();
             foreach (var note in notes)
@@ -257,6 +256,9 @@ public partial class MainWindow : Window
 
     private bool IsStickyQuickEditEnabled() =>
         bool.TryParse(SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "Sticky Quicke Edit window")?.Value, out var sticky) && sticky;
+
+    private bool IsObsidianNotesFile() =>
+        _notesPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase);
 
     private void SaveStickyQuickEditSetting(bool enabled)
     {
