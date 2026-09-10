@@ -21,7 +21,7 @@
         <TextBox Name="NoteText"
                  Grid.Row="1"
                  TabIndex="1"
-                 AcceptsReturn="True"
+                 AcceptsReturn="False"
                  TextWrapping="Wrap"
                  VerticalContentAlignment="Top"
                  Watermark="Enter note"
@@ -29,6 +29,7 @@
         <TextBox.ContextMenu>
           <ContextMenu>
             <MenuItem Header="Add tag" Click="AddTagMenuItem_OnClick" />
+            <MenuItem Header="Show/hide main window (Ctrl+M)" Click="ToggleMainWindowMenuItem_OnClick" />
             <Separator />
             <MenuItem Header="Copy" Click="CopyMenuItem_OnClick" />
             <MenuItem Header="Paste" Click="PasteMenuItem_OnClick" />

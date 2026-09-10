@@ -12,20 +12,25 @@ public partial class NoteWindow : Window
     private readonly string _geometryPath;
     private readonly bool _sticky;
     private readonly Action<bool>? _saveStickySetting;
+    private readonly Action? _toggleMainWindow;
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
-        : this(notesPath, geometryPath, sticky, null) { }
+        : this(notesPath, geometryPath, sticky, null, null) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting)
+        : this(notesPath, geometryPath, sticky, saveStickySetting, null) { }
+
+    public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting, Action? toggleMainWindow)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
         _sticky = sticky;
         _saveStickySetting = saveStickySetting;
+        _toggleMainWindow = toggleMainWindow;
         InitializeComponent();
         Opened += (_, _) =>
         {
@@ -76,7 +81,12 @@ public partial class NoteWindow : Window
     private void NoteText_OnKeyDown(object? sender, KeyEventArgs e)
     {
         var noteText = this.FindControl<TextBox>("NoteText")!;
-        if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
+        if (e.Key == Key.M && (e.KeyModifiers & KeyModifiers.Control) == KeyModifiers.Control)
+        {
+            _toggleMainWindow?.Invoke();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
         {
             var tagText = this.FindControl<TextBox>("TagText")!;
             tagText.CaretIndex = tagText.Text?.Length ?? 0;
@@ -131,6 +141,9 @@ public partial class NoteWindow : Window
         var tagText = this.FindControl<TextBox>("TagText")!;
         tagText.Focus();
     }
+
+    private void ToggleMainWindowMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
+        _toggleMainWindow?.Invoke();
 
     private void CopyMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
         this.FindControl<TextBox>("NoteText")!.Copy();

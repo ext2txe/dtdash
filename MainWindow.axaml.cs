@@ -176,13 +176,27 @@ public partial class MainWindow : Window
             _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
             IsStickyQuickEditEnabled(),
-            SaveStickyQuickEditSetting)
+            SaveStickyQuickEditSetting,
+            ToggleMainWindow)
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
             _noteWindow.Show(this);
         else
             _noteWindow.Show();
+    }
+
+    public void ToggleMainWindow()
+    {
+        if (WindowState == WindowState.Minimized)
+        {
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+        else
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

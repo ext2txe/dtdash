@@ -218,3 +218,4 @@
 - 2026-09-08: Quick notes window position and geometry persist on Windows and macOS.
 - 2026-09-10 16:30: Adds Shift+Enter support for inserting new lines in quick-edit notes while preserving each multi-line note as one stored record; plain Enter continues to save.
 - 2026-09-10 16:35: Persists quick-edit window geometry whenever the window moves or resizes, so its location survives new builds and ungraceful process replacement.
+- 2026-09-10 16:40: Adds quick-edit context-menu and Ctrl+M commands to show or minimize the main window; plain Enter saves the note and Shift+Enter inserts a new line.
