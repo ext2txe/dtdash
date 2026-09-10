@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.55 — 2026-09-10 08:36
+
+- Minimizes the main window when closed without Shift; closing with Shift quits the application.
+
+## 0.1.54 — 2026-09-10 08:33
+
+- Allows the main window's normal close action to shut down the application instead of minimizing it.
+
 ## 0.1.53 — 2026-09-10 07:55
 
 - Uses the current Obsidian daily Markdown file for loading, watching, and saving quick notes when Obsidian is enabled, and logs the enabled state and resolved daily-file path at startup.
