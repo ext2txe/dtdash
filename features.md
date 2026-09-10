@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.49 — 2026-09-10 07:02
+
+- Wraps quick-edit note text and expands the note window height as additional wrapped lines are needed.
+
 ## 0.1.48 — 2026-09-10 07:01
 
 - Sets the quick-edit tab order to Tag, Note, then Sticky.
