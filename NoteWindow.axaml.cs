@@ -32,6 +32,7 @@ public partial class NoteWindow : Window
         _saveStickySetting = saveStickySetting;
         _toggleMainWindow = toggleMainWindow;
         InitializeComponent();
+        this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         Opened += (_, _) =>
         {
             RestoreGeometry();
@@ -207,4 +208,7 @@ public partial class NoteWindow : Window
 
     private bool IsObsidianNotesFile() =>
         _notesPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase);
+
+    private static string GetVersion() =>
+        typeof(NoteWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19";
 }

@@ -31,6 +31,7 @@ public partial class MainWindow : Window
         _notesPath = SettingsStore.ResolveActiveNotesPath(configPath, DateTime.Now);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
+        this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         NotesList.ItemsSource = _notes;
         Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
         _notesWatcher = new FileSystemWatcher(Path.GetDirectoryName(_notesPath)!, Path.GetFileName(_notesPath))
@@ -198,6 +199,18 @@ public partial class MainWindow : Window
             WindowState = WindowState.Minimized;
         }
     }
+
+    private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.M && (e.KeyModifiers & KeyModifiers.Control) == KeyModifiers.Control)
+        {
+            ToggleMainWindow();
+            e.Handled = true;
+        }
+    }
+
+    private static string GetVersion() =>
+        typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19";
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {

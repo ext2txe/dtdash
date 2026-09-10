@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Dtdash.MainWindow"
         Icon="/redicon.png"
-        Width="900" Height="600" MinWidth="400" MinHeight="300">
+        Width="900" Height="600" MinWidth="400" MinHeight="300"
+        KeyDown="MainWindow_OnKeyDown">
   <Grid RowDefinitions="Auto,*,Auto">
     <Border Grid.Row="0" Margin="24,24,24,12" Padding="12" BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1">
       <Grid ColumnDefinitions="*,Auto,Auto">
@@ -15,6 +16,8 @@
       <ListBox.ContextMenu>
         <ContextMenu>
           <MenuItem Header="Copy note" Click="CopyNoteMenuItem_OnClick" />
+          <Separator />
+          <MenuItem Name="VersionMenuItem" IsEnabled="False" />
         </ContextMenu>
       </ListBox.ContextMenu>
     </ListBox>

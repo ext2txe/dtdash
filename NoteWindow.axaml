@@ -37,6 +37,8 @@
             <Separator />
             <MenuItem Header="Clear (Esc)" Click="ClearMenuItem_OnClick" />
             <MenuItem Header="Cancel (Shift+Esc)" Click="CancelMenuItem_OnClick" />
+            <Separator />
+            <MenuItem Name="VersionMenuItem" IsEnabled="False" />
           </ContextMenu>
         </TextBox.ContextMenu>
         </TextBox>
