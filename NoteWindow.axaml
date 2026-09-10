@@ -12,12 +12,14 @@
       <Grid RowDefinitions="Auto,*" RowSpacing="4">
         <Grid ColumnDefinitions="*,Auto">
           <TextBox Name="TagText"
+                   TabIndex="0"
                    Watermark="Tag"
                    KeyDown="TagText_OnKeyDown" />
-          <CheckBox Name="StickyCheckBox" Grid.Column="1" Content="Sticky" Margin="8,0,0,0" VerticalAlignment="Center" />
+          <CheckBox Name="StickyCheckBox" Grid.Column="1" TabIndex="2" Content="Sticky" Margin="8,0,0,0" VerticalAlignment="Center" />
         </Grid>
         <TextBox Name="NoteText"
                  Grid.Row="1"
+                 TabIndex="1"
                  AcceptsReturn="False"
                  TextWrapping="NoWrap"
                  Watermark="Enter note"
