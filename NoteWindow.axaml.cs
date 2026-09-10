@@ -41,6 +41,8 @@ public partial class NoteWindow : Window
             _saveStickySetting?.Invoke(this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true);
             SaveGeometry();
         };
+        PositionChanged += (_, _) => SaveGeometry();
+        SizeChanged += (_, _) => SaveGeometry();
         PointerPressed += NoteWindow_OnPointerPressed;
     }
 
