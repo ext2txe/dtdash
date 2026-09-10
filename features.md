@@ -222,3 +222,6 @@
 - 2026-09-10 16:45: Adds Ctrl+M to the main window and displays the current application version at the bottom of all context menus.
 - 2026-09-10 16:50: Saves application state explicitly during shutdown, including main, quick-edit, and settings window geometry and current settings; geometry is also persisted while windows move or resize.
 - 2026-09-10 16:55: Guarantees a single shutdown log entry through both application-exit and process-exit paths, followed by a blank line separating sessions.
+- 2026-09-10 17:00: Requires every build.ps1 build to receive a feature description and automatically records that description with a timestamp in features.md before compilation.
+- 2026-09-10 17:03: Validated automatic feature logging in the build workflow.
+- 2026-09-10 17:05: Recent feature summary — quick-edit multi-line input with Shift+Enter, persistent window geometry and shutdown state saving, Ctrl+M main-window toggling, version information in context menus, reliable shutdown logging with session spacing, and mandatory build-time feature logging.
