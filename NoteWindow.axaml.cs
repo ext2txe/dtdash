@@ -143,6 +143,12 @@ public partial class NoteWindow : Window
         tagText.Focus();
     }
 
+    public void SaveStateOnShutdown()
+    {
+        _saveStickySetting?.Invoke(this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true);
+        SaveGeometry();
+    }
+
     private void ToggleMainWindowMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
         _toggleMainWindow?.Invoke();
 

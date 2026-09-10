@@ -27,12 +27,20 @@ public partial class SettingsWindow : Window
             SaveSettings();
             SaveGeometry();
         };
+        PositionChanged += (_, _) => SaveGeometry();
+        SizeChanged += (_, _) => SaveGeometry();
     }
 
     private void SaveButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
         SaveSettings();
 
     private void SaveSettings() => SettingsStore.Save(_settingsPath, _viewModel.Settings);
+
+    public void SaveStateOnShutdown()
+    {
+        SaveSettings();
+        SaveGeometry();
+    }
 
     private void RestoreGeometry()
     {

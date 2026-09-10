@@ -46,7 +46,7 @@ public static class AppEventLog
             var lines = entries.Select(entry => $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {entry}");
             File.AppendAllLines(logPath, lines);
             if (sessionSeparator)
-                File.AppendAllText(logPath, Environment.NewLine);
+                File.AppendAllText(logPath, $"{Environment.NewLine}{Environment.NewLine}");
         }
         catch
         {

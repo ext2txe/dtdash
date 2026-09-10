@@ -17,7 +17,15 @@ public partial class App : Application
         {
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
             var configPath = ConfigStore.ResolvePath(desktop.Args ?? Array.Empty<string>());
+            var shutdownLogged = 0;
+            void LogShutdown()
+            {
+                if (Interlocked.Exchange(ref shutdownLogged, 1) == 0)
+                    AppEventLog.WriteShutdown(configPath);
+            }
+
             AppEventLog.WriteStartup(configPath);
+            AppDomain.CurrentDomain.ProcessExit += (_, _) => LogShutdown();
             desktop.MainWindow = new MainWindow(configPath);
             desktop.MainWindow.Opened += (_, _) => MacApplicationIcon.Set();
             Action openNote = () =>
@@ -31,7 +39,8 @@ public partial class App : Application
                 Avalonia.Threading.Dispatcher.UIThread.Post(() => ((MainWindow)desktop.MainWindow).ActivateFromSecondInstance()));
             desktop.Exit += (_, _) =>
             {
-                AppEventLog.WriteShutdown(configPath);
+                ((MainWindow)desktop.MainWindow).SaveStateOnShutdown();
+                LogShutdown();
                 _globalHotkey?.Dispose();
                 AppInstance.StopActivationListener();
             };

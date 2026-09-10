@@ -50,6 +50,8 @@ public partial class MainWindow : Window
         UpdateClock();
         _clockTimer.Tick += (_, _) => UpdateClock();
         _clockTimer.Start();
+        PositionChanged += (_, _) => SaveGeometry();
+        SizeChanged += (_, _) => SaveGeometry();
         Opened += (_, _) =>
         {
             RestoreGeometry();
@@ -198,6 +200,13 @@ public partial class MainWindow : Window
         {
             WindowState = WindowState.Minimized;
         }
+    }
+
+    public void SaveStateOnShutdown()
+    {
+        SaveGeometry();
+        _noteWindow?.SaveStateOnShutdown();
+        _settingsWindow?.SaveStateOnShutdown();
     }
 
     private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)

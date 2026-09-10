@@ -220,3 +220,5 @@
 - 2026-09-10 16:35: Persists quick-edit window geometry whenever the window moves or resizes, so its location survives new builds and ungraceful process replacement.
 - 2026-09-10 16:40: Adds quick-edit context-menu and Ctrl+M commands to show or minimize the main window; plain Enter saves the note and Shift+Enter inserts a new line.
 - 2026-09-10 16:45: Adds Ctrl+M to the main window and displays the current application version at the bottom of all context menus.
+- 2026-09-10 16:50: Saves application state explicitly during shutdown, including main, quick-edit, and settings window geometry and current settings; geometry is also persisted while windows move or resize.
+- 2026-09-10 16:55: Guarantees a single shutdown log entry through both application-exit and process-exit paths, followed by a blank line separating sessions.
