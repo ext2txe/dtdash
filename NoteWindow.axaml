@@ -21,7 +21,7 @@
         <TextBox Name="NoteText"
                  Grid.Row="1"
                  TabIndex="1"
-                 AcceptsReturn="False"
+                 AcceptsReturn="True"
                  TextWrapping="Wrap"
                  VerticalContentAlignment="Top"
                  Watermark="Enter note"

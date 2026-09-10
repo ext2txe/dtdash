@@ -216,3 +216,4 @@
 - Windows builds provide a desktop shortcut to the current executable.
 - 2026-09-08: Windows Ctrl+Shift+N opens the quick notes window.
 - 2026-09-08: Quick notes window position and geometry persist on Windows and macOS.
+- 2026-09-10 16:30: Adds Shift+Enter support for inserting new lines in quick-edit notes while preserving each multi-line note as one stored record; plain Enter continues to save.

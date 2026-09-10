@@ -83,7 +83,16 @@ public partial class NoteWindow : Window
         }
         else if (e.Key == Key.Enter)
         {
-            AppendAndClose();
+            if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift)
+            {
+                var caret = noteText.CaretIndex;
+                noteText.Text = noteText.Text?.Insert(caret, Environment.NewLine);
+                noteText.CaretIndex = caret + Environment.NewLine.Length;
+            }
+            else
+            {
+                AppendAndClose();
+            }
             e.Handled = true;
         }
         else if (e.Key == Key.Escape)
@@ -149,7 +158,7 @@ public partial class NoteWindow : Window
         if (!string.IsNullOrWhiteSpace(text))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
-            var line = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text}";
+            var line = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text.Replace("\r\n", "\n").Replace("\n", "\\n")}";
             File.AppendAllText(_notesPath, $"{(IsObsidianNotesFile() ? "- " : string.Empty)}{line}{Environment.NewLine}");
         }
 

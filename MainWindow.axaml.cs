@@ -153,6 +153,7 @@ public partial class MainWindow : Window
                     .Select(line => IsObsidianNotesFile() && line.TrimStart().StartsWith("- ")
                         ? line.TrimStart()[2..]
                         : line)
+                    .Select(line => line.Replace("\\\\n", Environment.NewLine))
                     .Reverse()
                     .ToArray()
                 : Array.Empty<string>();
