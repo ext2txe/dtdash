@@ -1,5 +1,13 @@
 # Features
 
+## 0.1.51 — 2026-09-10 07:27
+
+- Persists changes to the Sticky setting made in the quick-edit window.
+
+## 0.1.50 — 2026-09-10 07:24
+
+- Restores the Sticky quick-edit setting in migrated settings files and opens quick edit at startup when Sticky is enabled.
+
 ## 0.1.49 — 2026-09-10 07:02
 
 - Wraps quick-edit note text and expands the note window height as additional wrapped lines are needed.

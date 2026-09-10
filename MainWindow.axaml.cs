@@ -52,8 +52,13 @@ public partial class MainWindow : Window
         Opened += (_, _) =>
         {
             RestoreGeometry();
-            if (ShouldStartMinimized())
-                Dispatcher.UIThread.Post(() => WindowState = WindowState.Minimized);
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (IsStickyQuickEditEnabled())
+                    OpenNoteWindow(false);
+                if (ShouldStartMinimized())
+                    WindowState = WindowState.Minimized;
+            });
         };
         Closing += (_, e) =>
         {
@@ -170,7 +175,8 @@ public partial class MainWindow : Window
         _noteWindow = new NoteWindow(
             _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
-            IsStickyQuickEditEnabled())
+            IsStickyQuickEditEnabled(),
+            SaveStickyQuickEditSetting)
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
@@ -251,6 +257,17 @@ public partial class MainWindow : Window
 
     private bool IsStickyQuickEditEnabled() =>
         bool.TryParse(SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "Sticky Quicke Edit window")?.Value, out var sticky) && sticky;
+
+    private void SaveStickyQuickEditSetting(bool enabled)
+    {
+        var settings = SettingsStore.Load(_configPath);
+        var sticky = settings.FirstOrDefault(s => s.Name == "Sticky Quicke Edit window");
+        if (sticky is not null)
+        {
+            sticky.Value = enabled.ToString().ToLowerInvariant();
+            SettingsStore.Save(_configPath, settings);
+        }
+    }
 
     private static bool IsShiftPressed()
     {

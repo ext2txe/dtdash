@@ -19,12 +19,18 @@ public static class SettingsStore
                 var settings = JsonSerializer.Deserialize<List<SettingEntry>>(File.ReadAllText(path));
                 if (settings is not null && settings.Count > 0)
                 {
-                    var startMinimized = DefaultSettings().First(s => s.Name == "StartMinimized");
-                    if (settings.All(s => s.Name != startMinimized.Name))
+                    var changed = false;
+                    foreach (var defaultSetting in DefaultSettings())
                     {
-                        settings.Add(startMinimized);
-                        Save(configPath, settings);
+                        if (settings.All(s => s.Name != defaultSetting.Name))
+                        {
+                            settings.Add(defaultSetting);
+                            changed = true;
+                        }
                     }
+
+                    if (changed)
+                        Save(configPath, settings);
                     return settings;
                 }
             }

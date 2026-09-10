@@ -11,16 +11,21 @@ public partial class NoteWindow : Window
     private readonly string _notesPath;
     private readonly string _geometryPath;
     private readonly bool _sticky;
+    private readonly Action<bool>? _saveStickySetting;
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
+        : this(notesPath, geometryPath, sticky, null) { }
+
+    public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
         _sticky = sticky;
+        _saveStickySetting = saveStickySetting;
         InitializeComponent();
         Opened += (_, _) =>
         {
@@ -33,7 +38,7 @@ public partial class NoteWindow : Window
         };
         Closing += (_, _) =>
         {
-            this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked = _sticky;
+            _saveStickySetting?.Invoke(this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true);
             SaveGeometry();
         };
         PointerPressed += NoteWindow_OnPointerPressed;
