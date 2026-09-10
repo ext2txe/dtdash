@@ -4,12 +4,13 @@
         Icon="/redicon.png"
         Width="420" Height="120"
         MinWidth="300" MinHeight="80"
+        SizeToContent="Height"
         SystemDecorations="None"
         CanResize="True"
         ShowInTaskbar="False">
   <Border BorderBrush="Gray" BorderThickness="1" Background="{DynamicResource ThemeBackgroundBrush}">
     <Grid Margin="8">
-      <Grid RowDefinitions="Auto,*" RowSpacing="4">
+      <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
         <Grid ColumnDefinitions="*,Auto">
           <TextBox Name="TagText"
                    TabIndex="0"
@@ -21,7 +22,8 @@
                  Grid.Row="1"
                  TabIndex="1"
                  AcceptsReturn="False"
-                 TextWrapping="NoWrap"
+                 TextWrapping="Wrap"
+                 VerticalContentAlignment="Top"
                  Watermark="Enter note"
                  KeyDown="NoteText_OnKeyDown">
         <TextBox.ContextMenu>

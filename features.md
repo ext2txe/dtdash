@@ -1,5 +1,9 @@
 # Features
 
+## 0.1.51 — 2026-09-10 09:30
+
+- Resolves the merge in favor of the local `main` branch implementation.
+
 ## 0.1.50 — 2026-09-09 23:25
 
 - Fixes startup with existing settings files by migrating all newly added default settings.
