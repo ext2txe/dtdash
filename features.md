@@ -225,3 +225,4 @@
 - 2026-09-10 17:00: Requires every build.ps1 build to receive a feature description and automatically records that description with a timestamp in features.md before compilation.
 - 2026-09-10 17:03: Validated automatic feature logging in the build workflow.
 - 2026-09-10 17:05: Recent feature summary — quick-edit multi-line input with Shift+Enter, persistent window geometry and shutdown state saving, Ctrl+M main-window toggling, version information in context menus, reliable shutdown logging with session spacing, and mandatory build-time feature logging.
+- 2026-09-11 07:16: Resets the quick-note window height to its content-sized value after clearing a multi-line note, including Escape and Clear commands; new notes use screen-centered startup and do not restore stale note height.

@@ -60,8 +60,8 @@ public partial class NoteWindow : Window
             var state = System.Text.Json.JsonSerializer.Deserialize<WindowGeometry>(File.ReadAllText(_geometryPath));
             if (state is null) return;
             Width = Math.Clamp(state.Width, MinWidth, 3000);
-            Height = Math.Clamp(state.Height, MinHeight, 2000);
-            Position = new PixelPoint(state.X, state.Y);
+            if (Screens.All.Any(screen => screen.WorkingArea.Contains(new PixelPoint(state.X, state.Y))))
+                Position = new PixelPoint(state.X, state.Y);
         }
         catch { }
     }
@@ -113,7 +113,7 @@ public partial class NoteWindow : Window
             if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift || string.IsNullOrEmpty(noteText.Text))
                 Close();
             else
-                noteText.Clear();
+                ClearNoteText();
             e.Handled = true;
         }
     }
@@ -162,7 +162,7 @@ public partial class NoteWindow : Window
         this.FindControl<TextBox>("NoteText")!.Cut();
 
     private void ClearMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
-        this.FindControl<TextBox>("NoteText")!.Clear();
+        ClearNoteText();
 
     private void CancelMenuItem_OnClick(object? sender, RoutedEventArgs e) => Close();
 
@@ -186,12 +186,19 @@ public partial class NoteWindow : Window
 
         if (this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true)
         {
-            this.FindControl<TextBox>("NoteText")!.Clear();
+            ClearNoteText();
             this.FindControl<TextBox>("NoteText")!.Focus();
             return;
         }
 
         Close();
+    }
+
+    private void ClearNoteText()
+    {
+        this.FindControl<TextBox>("NoteText")!.Clear();
+        Height = double.NaN;
+        SizeToContent = SizeToContent.Height;
     }
 
     private string LoadLastTag()
