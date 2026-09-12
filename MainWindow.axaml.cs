@@ -183,7 +183,7 @@ public partial class MainWindow : Window
             IsKeepOnTopEnabled(),
             SaveStickyQuickEditSetting,
             ToggleMainWindow)
-        { WindowStartupLocation = WindowStartupLocation.CenterScreen };
+        { WindowStartupLocation = useMainWindowAsOwner ? WindowStartupLocation.CenterOwner : WindowStartupLocation.Manual };
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
             _noteWindow.Show(this);

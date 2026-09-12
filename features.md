@@ -236,3 +236,7 @@
 - 2026-09-12 09:53: Built version 0.1.69 with persisted recent tags and numbered tag picker
 - 2026-09-12 09:50: Limits recent-tag picker data to the 10 most recent persisted tags.
 - 2026-09-12 09:53: Built version 0.1.71 with recent-tag list limited to 10 entries
+- 2026-09-12 10:00: Restores startup quick-edit position without centering, positions the tag picker near quick edit, and allows adding a new tag with Enter.
+- 2026-09-12 09:59: Built version 0.1.73 with corrected qedit startup position and tag popup input
+- 2026-09-12 10:15: Focuses the new-tag field when the tag popup opens and closes the popup before focusing the note field after numeric or new-tag selection.
+- 2026-09-12 10:03: Built version 0.1.75 with focused tag input and post-selection note focus

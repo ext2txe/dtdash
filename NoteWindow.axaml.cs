@@ -159,17 +159,17 @@ public partial class NoteWindow : Window
     private async void OpenTagPicker()
     {
         var tags = TagStore.Load(_tagsPath);
-        if (tags.Count == 0)
-        {
-            this.FindControl<TextBox>("TagText")!.Focus();
-            return;
-        }
-
         var picker = new TagPickerWindow(tags, tag =>
         {
             this.FindControl<TextBox>("TagText")!.Text = tag;
-            this.FindControl<TextBox>("NoteText")!.Focus();
+        }, tag =>
+        {
+            TagStore.Add(_tagsPath, tag);
+            this.FindControl<TextBox>("TagText")!.Text = tag;
         });
+        picker.Closed += (_, _) => this.FindControl<TextBox>("NoteText")!.Focus();
+        picker.WindowStartupLocation = WindowStartupLocation.Manual;
+        picker.Position = new PixelPoint(Position.X + 20, Position.Y + (int)Height + 4);
         await picker.ShowDialog(this);
     }
 
