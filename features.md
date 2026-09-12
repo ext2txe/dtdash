@@ -225,3 +225,8 @@
 - 2026-09-10 17:00: Requires every build.ps1 build to receive a feature description and automatically records that description with a timestamp in features.md before compilation.
 - 2026-09-10 17:03: Validated automatic feature logging in the build workflow.
 - 2026-09-10 17:05: Recent feature summary — quick-edit multi-line input with Shift+Enter, persistent window geometry and shutdown state saving, Ctrl+M main-window toggling, version information in context menus, reliable shutdown logging with session spacing, and mandatory build-time feature logging.
+- 2026-09-12 09:17: Built latest release
+- 2026-09-12 09:30: Preserves quick-edit geometry during startup restoration and adds the editable Keep on Top application setting, enabled by default.
+- 2026-09-12 09:21: Built version 0.1.65 with quick-edit geometry and Keep on Top changes
+- 2026-09-12 09:35: Saves quick-edit geometry on every position or size change, restores the saved position on open, and normalizes the window to the single-line height.
+- 2026-09-12 09:37: Built version 0.1.67 with immediate quick-edit geometry persistence and single-line height

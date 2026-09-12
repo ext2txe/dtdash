@@ -8,30 +8,35 @@ namespace Dtdash;
 
 public partial class NoteWindow : Window
 {
+    private const double SingleLineHeight = 88;
     private readonly string _notesPath;
     private readonly string _geometryPath;
     private readonly bool _sticky;
+    private readonly bool _keepOnTop;
     private readonly Action<bool>? _saveStickySetting;
     private readonly Action? _toggleMainWindow;
+    private bool _restoringGeometry;
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
-        : this(notesPath, geometryPath, sticky, null, null) { }
+        : this(notesPath, geometryPath, sticky, true, null, null) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting)
-        : this(notesPath, geometryPath, sticky, saveStickySetting, null) { }
+        : this(notesPath, geometryPath, sticky, true, saveStickySetting, null) { }
 
-    public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting, Action? toggleMainWindow)
+    public NoteWindow(string notesPath, string geometryPath, bool sticky, bool keepOnTop, Action<bool>? saveStickySetting, Action? toggleMainWindow)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
         _sticky = sticky;
+        _keepOnTop = keepOnTop;
         _saveStickySetting = saveStickySetting;
         _toggleMainWindow = toggleMainWindow;
         InitializeComponent();
+        Topmost = _keepOnTop;
         this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         Opened += (_, _) =>
         {
@@ -54,20 +59,27 @@ public partial class NoteWindow : Window
 
     private void RestoreGeometry()
     {
+        _restoringGeometry = true;
         try
         {
             if (!File.Exists(_geometryPath)) return;
             var state = System.Text.Json.JsonSerializer.Deserialize<WindowGeometry>(File.ReadAllText(_geometryPath));
             if (state is null) return;
             Width = Math.Clamp(state.Width, MinWidth, 3000);
-            Height = Math.Clamp(state.Height, MinHeight, 2000);
+            Height = SingleLineHeight;
             Position = new PixelPoint(state.X, state.Y);
         }
         catch { }
+        finally
+        {
+            _restoringGeometry = false;
+            SaveGeometry();
+        }
     }
 
     private void SaveGeometry()
     {
+        if (_restoringGeometry) return;
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_geometryPath)!);

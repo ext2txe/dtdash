@@ -179,6 +179,7 @@ public partial class MainWindow : Window
             _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
             IsStickyQuickEditEnabled(),
+            IsKeepOnTopEnabled(),
             SaveStickyQuickEditSetting,
             ToggleMainWindow)
         { WindowStartupLocation = WindowStartupLocation.CenterOwner };
@@ -293,6 +294,9 @@ public partial class MainWindow : Window
 
     private bool IsStickyQuickEditEnabled() =>
         bool.TryParse(SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "Sticky Quicke Edit window")?.Value, out var sticky) && sticky;
+
+    private bool IsKeepOnTopEnabled() =>
+        !bool.TryParse(SettingsStore.Load(_configPath).FirstOrDefault(s => s.Name == "Keep on Top")?.Value, out var keepOnTop) || keepOnTop;
 
     private bool IsObsidianNotesFile() =>
         _notesPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase);

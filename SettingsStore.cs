@@ -102,6 +102,13 @@ public static class SettingsStore
             "Application",
             4,
             "Folder name for Obsidian quick notes within the configured vault.")
+        ,new(
+            "Keep on Top",
+            "true",
+            "true",
+            "Application",
+            5,
+            "Keep the quick edit window above other windows.")
     ];
 
     public static void Save(string configPath, IEnumerable<SettingEntry> settings)

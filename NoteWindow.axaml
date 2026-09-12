@@ -2,9 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Dtdash.NoteWindow"
         Icon="/redicon.png"
-        Width="420" Height="120"
-        MinWidth="300" MinHeight="80"
-        SizeToContent="Height"
+        Width="420" Height="88"
+        MinWidth="300" MinHeight="88"
         SystemDecorations="None"
         CanResize="True"
         ShowInTaskbar="False">
