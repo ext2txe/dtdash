@@ -184,6 +184,8 @@ public partial class MainWindow : Window
             SaveStickyQuickEditSetting,
             ToggleMainWindow)
         { WindowStartupLocation = useMainWindowAsOwner ? WindowStartupLocation.CenterOwner : WindowStartupLocation.Manual };
+        if (!useMainWindowAsOwner)
+            _noteWindow.Position = Position;
         _noteWindow.Closed += (_, _) => _noteWindow = null;
         if (useMainWindowAsOwner)
             _noteWindow.Show(this);

@@ -68,6 +68,12 @@ public partial class NoteWindow : Window
             if (!File.Exists(_geometryPath)) return;
             var state = System.Text.Json.JsonSerializer.Deserialize<WindowGeometry>(File.ReadAllText(_geometryPath));
             if (state is null) return;
+            if (state.ScreenWidth > 0 && !Screens.All.Any(screen =>
+                screen.WorkingArea.X == state.ScreenX &&
+                screen.WorkingArea.Y == state.ScreenY &&
+                screen.WorkingArea.Width == state.ScreenWidth &&
+                screen.WorkingArea.Height == state.ScreenHeight))
+                return;
             Width = Math.Clamp(state.Width, MinWidth, 3000);
             Height = SingleLineHeight;
             Position = new PixelPoint(state.X, state.Y);
@@ -86,13 +92,18 @@ public partial class NoteWindow : Window
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_geometryPath)!);
-            var state = new WindowGeometry(Position.X, Position.Y, Width, Height);
+            var screen = Screens.ScreenFromPoint(Position)?.WorkingArea;
+            var state = new WindowGeometry(
+                Position.X, Position.Y, Width, Height,
+                screen?.X ?? 0, screen?.Y ?? 0, screen?.Width ?? 0, screen?.Height ?? 0);
             File.WriteAllText(_geometryPath, System.Text.Json.JsonSerializer.Serialize(state));
         }
         catch { }
     }
 
-    private sealed record WindowGeometry(int X, int Y, double Width, double Height);
+    private sealed record WindowGeometry(
+        int X, int Y, double Width, double Height,
+        int ScreenX = 0, int ScreenY = 0, int ScreenWidth = 0, int ScreenHeight = 0);
 
     private void NoteText_OnKeyDown(object? sender, KeyEventArgs e)
     {

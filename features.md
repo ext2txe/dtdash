@@ -240,3 +240,7 @@
 - 2026-09-12 09:59: Built version 0.1.73 with corrected qedit startup position and tag popup input
 - 2026-09-12 10:15: Focuses the new-tag field when the tag popup opens and closes the popup before focusing the note field after numeric or new-tag selection.
 - 2026-09-12 10:03: Built version 0.1.75 with focused tag input and post-selection note focus
+- 2026-09-12 10:30: Makes quick-edit geometry display-aware and falls back to the main window display when the saved display is unavailable.
+- 2026-09-12 10:06: Built version 0.1.77 with display-aware quick-edit restoration
+- 2026-09-12 10:06: Built version 0.1.77 with display-aware quick-edit restoration
+- 2026-09-12 10:10: Closes the tag picker after adding a new tag and returns focus to the qedit note input.
