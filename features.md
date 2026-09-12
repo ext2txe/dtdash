@@ -231,3 +231,8 @@
 - 2026-09-12 09:21: Built version 0.1.65 with quick-edit geometry and Keep on Top changes
 - 2026-09-12 09:35: Saves quick-edit geometry on every position or size change, restores the saved position on open, and normalizes the window to the single-line height.
 - 2026-09-12 09:37: Built version 0.1.67 with immediate quick-edit geometry persistence and single-line height
+- 2026-09-12 09:45: Adds persisted recent tags and an Alt+T numbered tag picker that inserts a selected tag and focuses the note field.
+- 2026-09-12 09:52: Built version 0.1.69 with persisted recent tags and numbered tag picker
+- 2026-09-12 09:53: Built version 0.1.69 with persisted recent tags and numbered tag picker
+- 2026-09-12 09:50: Limits recent-tag picker data to the 10 most recent persisted tags.
+- 2026-09-12 09:53: Built version 0.1.71 with recent-tag list limited to 10 entries

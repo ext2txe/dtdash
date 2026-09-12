@@ -178,6 +178,7 @@ public partial class MainWindow : Window
         _noteWindow = new NoteWindow(
             _notesPath,
             Path.Combine(Path.GetDirectoryName(_configPath)!, "note-window.json"),
+            Path.Combine(Path.GetDirectoryName(_configPath)!, "recent-tags.json"),
             IsStickyQuickEditEnabled(),
             IsKeepOnTopEnabled(),
             SaveStickyQuickEditSetting,

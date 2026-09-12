@@ -11,6 +11,7 @@ public partial class NoteWindow : Window
     private const double SingleLineHeight = 88;
     private readonly string _notesPath;
     private readonly string _geometryPath;
+    private readonly string _tagsPath;
     private readonly bool _sticky;
     private readonly bool _keepOnTop;
     private readonly Action<bool>? _saveStickySetting;
@@ -19,18 +20,20 @@ public partial class NoteWindow : Window
 
     public NoteWindow() : this(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "data", "notes.txt"),
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"), false) { }
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "note-window.json"),
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".dtdash", "recent-tags.json"), false, true, null, null) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky = false)
-        : this(notesPath, geometryPath, sticky, true, null, null) { }
+        : this(notesPath, geometryPath, Path.Combine(Path.GetDirectoryName(geometryPath)!, "recent-tags.json"), sticky, true, null, null) { }
 
     public NoteWindow(string notesPath, string geometryPath, bool sticky, Action<bool>? saveStickySetting)
-        : this(notesPath, geometryPath, sticky, true, saveStickySetting, null) { }
+        : this(notesPath, geometryPath, Path.Combine(Path.GetDirectoryName(geometryPath)!, "recent-tags.json"), sticky, true, saveStickySetting, null) { }
 
-    public NoteWindow(string notesPath, string geometryPath, bool sticky, bool keepOnTop, Action<bool>? saveStickySetting, Action? toggleMainWindow)
+    public NoteWindow(string notesPath, string geometryPath, string tagsPath, bool sticky, bool keepOnTop, Action<bool>? saveStickySetting, Action? toggleMainWindow)
     {
         _notesPath = notesPath;
         _geometryPath = geometryPath;
+        _tagsPath = tagsPath;
         _sticky = sticky;
         _keepOnTop = keepOnTop;
         _saveStickySetting = saveStickySetting;
@@ -101,9 +104,7 @@ public partial class NoteWindow : Window
         }
         else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
         {
-            var tagText = this.FindControl<TextBox>("TagText")!;
-            tagText.CaretIndex = tagText.Text?.Length ?? 0;
-            tagText.Focus();
+            OpenTagPicker();
             e.Handled = true;
         }
         else if (e.Key == Key.Enter)
@@ -139,7 +140,7 @@ public partial class NoteWindow : Window
         }
         else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
         {
-            this.FindControl<TextBox>("TagText")!.Focus();
+            OpenTagPicker();
             e.Handled = true;
         }
         else if (e.Key == Key.Escape)
@@ -153,6 +154,23 @@ public partial class NoteWindow : Window
     {
         var tagText = this.FindControl<TextBox>("TagText")!;
         tagText.Focus();
+    }
+
+    private async void OpenTagPicker()
+    {
+        var tags = TagStore.Load(_tagsPath);
+        if (tags.Count == 0)
+        {
+            this.FindControl<TextBox>("TagText")!.Focus();
+            return;
+        }
+
+        var picker = new TagPickerWindow(tags, tag =>
+        {
+            this.FindControl<TextBox>("TagText")!.Text = tag;
+            this.FindControl<TextBox>("NoteText")!.Focus();
+        });
+        await picker.ShowDialog(this);
     }
 
     public void SaveStateOnShutdown()
@@ -191,6 +209,7 @@ public partial class NoteWindow : Window
         var text = this.FindControl<TextBox>("NoteText")?.Text?.Trim();
         if (!string.IsNullOrWhiteSpace(text))
         {
+            TagStore.Add(_tagsPath, tag ?? string.Empty);
             Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
             var line = $"{DateTime.Now:yyyyMMdd HH:mm:ss} - {tag} - {text.Replace("\r\n", "\n").Replace("\n", "\\n")}";
             File.AppendAllText(_notesPath, $"{(IsObsidianNotesFile() ? "- " : string.Empty)}{line}{Environment.NewLine}");
@@ -209,8 +228,7 @@ public partial class NoteWindow : Window
     private void ClearNoteText()
     {
         this.FindControl<TextBox>("NoteText")!.Clear();
-        Height = double.NaN;
-        SizeToContent = SizeToContent.Height;
+        Height = SingleLineHeight;
     }
 
     private string LoadLastTag()
