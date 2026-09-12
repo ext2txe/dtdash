@@ -125,7 +125,7 @@ public partial class NoteWindow : Window
             if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift || string.IsNullOrEmpty(noteText.Text))
                 Close();
             else
-                noteText.Clear();
+                ClearNoteText();
             e.Handled = true;
         }
     }
@@ -174,7 +174,7 @@ public partial class NoteWindow : Window
         this.FindControl<TextBox>("NoteText")!.Cut();
 
     private void ClearMenuItem_OnClick(object? sender, RoutedEventArgs e) =>
-        this.FindControl<TextBox>("NoteText")!.Clear();
+        ClearNoteText();
 
     private void CancelMenuItem_OnClick(object? sender, RoutedEventArgs e) => Close();
 
@@ -198,12 +198,19 @@ public partial class NoteWindow : Window
 
         if (this.FindControl<CheckBox>("StickyCheckBox")!.IsChecked == true)
         {
-            this.FindControl<TextBox>("NoteText")!.Clear();
+            ClearNoteText();
             this.FindControl<TextBox>("NoteText")!.Focus();
             return;
         }
 
         Close();
+    }
+
+    private void ClearNoteText()
+    {
+        this.FindControl<TextBox>("NoteText")!.Clear();
+        Height = double.NaN;
+        SizeToContent = SizeToContent.Height;
     }
 
     private string LoadLastTag()
