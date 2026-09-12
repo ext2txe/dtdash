@@ -264,5 +264,6 @@ public partial class NoteWindow : Window
         _notesPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase);
 
     private static string GetVersion() =>
-        typeof(NoteWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19";
+        System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(NoteWindow).Assembly)
+            ?.InformationalVersion ?? "0.1.19";
 }

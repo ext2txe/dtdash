@@ -244,3 +244,5 @@
 - 2026-09-12 10:06: Built version 0.1.77 with display-aware quick-edit restoration
 - 2026-09-12 10:06: Built version 0.1.77 with display-aware quick-edit restoration
 - 2026-09-12 10:10: Closes the tag picker after adding a new tag and returns focus to the qedit note input.
+- 2026-09-12 10:10: Guarantees that the tag picker closes after new-tag Enter, including when tag persistence reports an error.
+- 2026-09-12 10:10: Marks debug builds with a `(d)` informational version suffix to distinguish them from release builds.

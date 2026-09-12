@@ -38,9 +38,15 @@ public sealed class TagPickerWindow : Window
             }
             if (e.Key == Key.Enter && !string.IsNullOrWhiteSpace(newTag.Text))
             {
-                _addTag(newTag.Text.Trim());
-                Close();
                 e.Handled = true;
+                try
+                {
+                    _addTag(newTag.Text.Trim());
+                }
+                finally
+                {
+                    Close();
+                }
             }
         };
         panel.Children.Add(newTag);

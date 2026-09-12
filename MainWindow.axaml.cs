@@ -223,7 +223,8 @@ public partial class MainWindow : Window
     }
 
     private static string GetVersion() =>
-        typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.19";
+        System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(MainWindow).Assembly)
+            ?.InformationalVersion ?? "0.1.19";
 
     private void LogButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
