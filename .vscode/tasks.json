@@ -36,6 +36,17 @@
                 "${workspaceFolder}/dtdash.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build dtdash",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "-c",
+                "Debug"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }

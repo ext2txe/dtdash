@@ -248,3 +248,4 @@
 - 2026-09-12 10:10: Marks debug builds with a `(d)` informational version suffix to distinguish them from release builds.
 - 2026-09-14 08:29: Makes qedit the startup window and makes Ctrl+Shift+N focus qedit, activate dtDash, or minimize the application when qedit is already active.
 - 2026-09-14 08:35: Makes Ctrl+Shift+N close active qedit and reopen or focus only qedit without restoring the main window.
+- 2026-09-14 08:42: Starts the main window minimized before its first display so qedit opens without a visible main-window flash.

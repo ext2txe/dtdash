@@ -31,6 +31,7 @@ public partial class MainWindow : Window
         _notesPath = SettingsStore.ResolveActiveNotesPath(configPath, DateTime.Now);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
+        WindowState = WindowState.Minimized;
         this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         NotesList.ItemsSource = _notes;
         Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
