@@ -96,13 +96,12 @@ public partial class MainWindow : Window
 
     public void OpenNoteFromHotkey()
     {
-        if (_noteWindow is { IsActive: true, WindowState: not WindowState.Minimized })
+        if (_noteWindow is { IsActive: true, WindowState: not WindowState.Minimized } activeNoteWindow)
         {
-            MinimizeApplication();
+            activeNoteWindow.Close();
             return;
         }
 
-        ActivateFromSecondInstance();
         OpenNoteWindow(false);
         if (_noteWindow is { } noteWindow)
         {
@@ -110,14 +109,6 @@ public partial class MainWindow : Window
             noteWindow.Activate();
             noteWindow.Focus();
         }
-    }
-
-    private void MinimizeApplication()
-    {
-        _noteWindow?.WindowState = WindowState.Minimized;
-        if (_settingsWindow is { } settingsWindow)
-            settingsWindow.WindowState = WindowState.Minimized;
-        WindowState = WindowState.Minimized;
     }
 
     private void UpdateClock()
