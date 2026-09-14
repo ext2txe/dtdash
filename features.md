@@ -246,3 +246,4 @@
 - 2026-09-12 10:10: Closes the tag picker after adding a new tag and returns focus to the qedit note input.
 - 2026-09-12 10:10: Guarantees that the tag picker closes after new-tag Enter, including when tag persistence reports an error.
 - 2026-09-12 10:10: Marks debug builds with a `(d)` informational version suffix to distinguish them from release builds.
+- 2026-09-14 08:29: Makes qedit the startup window and makes Ctrl+Shift+N focus qedit, activate dtDash, or minimize the application when qedit is already active.

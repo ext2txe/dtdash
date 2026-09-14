@@ -57,8 +57,7 @@ public partial class MainWindow : Window
             RestoreGeometry();
             Dispatcher.UIThread.Post(() =>
             {
-                if (IsStickyQuickEditEnabled())
-                    OpenNoteWindow(false);
+                OpenNoteWindow(false);
                 if (ShouldStartMinimized())
                     WindowState = WindowState.Minimized;
             });
@@ -97,12 +96,28 @@ public partial class MainWindow : Window
 
     public void OpenNoteFromHotkey()
     {
-        var wasMinimized = WindowState == WindowState.Minimized;
-        if (!wasMinimized)
-            ActivateFromSecondInstance();
+        if (_noteWindow is { IsActive: true, WindowState: not WindowState.Minimized })
+        {
+            MinimizeApplication();
+            return;
+        }
+
+        ActivateFromSecondInstance();
         OpenNoteWindow(false);
-        if (wasMinimized)
-            WindowState = WindowState.Minimized;
+        if (_noteWindow is { } noteWindow)
+        {
+            noteWindow.WindowState = WindowState.Normal;
+            noteWindow.Activate();
+            noteWindow.Focus();
+        }
+    }
+
+    private void MinimizeApplication()
+    {
+        _noteWindow?.WindowState = WindowState.Minimized;
+        if (_settingsWindow is { } settingsWindow)
+            settingsWindow.WindowState = WindowState.Minimized;
+        WindowState = WindowState.Minimized;
     }
 
     private void UpdateClock()
