@@ -39,6 +39,7 @@ public partial class NoteWindow : Window
         _saveStickySetting = saveStickySetting;
         _toggleMainWindow = toggleMainWindow;
         InitializeComponent();
+        AddHandler(KeyDownEvent, NoteWindow_OnKeyDown, RoutingStrategies.Tunnel);
         Topmost = _keepOnTop;
         this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         Opened += (_, _) =>
@@ -113,11 +114,6 @@ public partial class NoteWindow : Window
             _toggleMainWindow?.Invoke();
             e.Handled = true;
         }
-        else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
-        {
-            OpenTagPicker();
-            e.Handled = true;
-        }
         else if (e.Key == Key.Enter)
         {
             if ((e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift)
@@ -149,11 +145,6 @@ public partial class NoteWindow : Window
             this.FindControl<TextBox>("NoteText")!.Focus();
             e.Handled = true;
         }
-        else if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
-        {
-            OpenTagPicker();
-            e.Handled = true;
-        }
         else if (e.Key == Key.Escape)
         {
             Close();
@@ -167,9 +158,19 @@ public partial class NoteWindow : Window
         tagText.Focus();
     }
 
+    private void NoteWindow_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.T && (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt)
+        {
+            OpenTagPicker();
+            e.Handled = true;
+        }
+    }
+
     private async void OpenTagPicker()
     {
         var tags = TagStore.Load(_tagsPath);
+        var usedTags = TagStore.LoadUsedTags(_notesPath);
         var picker = new TagPickerWindow(tags, tag =>
         {
             this.FindControl<TextBox>("TagText")!.Text = tag;
@@ -177,11 +178,50 @@ public partial class NoteWindow : Window
         {
             TagStore.Add(_tagsPath, tag);
             this.FindControl<TextBox>("TagText")!.Text = tag;
-        });
+        }, tag => !usedTags.Contains(tag), tag => TagStore.Remove(_tagsPath, tag));
         picker.Closed += (_, _) => this.FindControl<TextBox>("NoteText")!.Focus();
+        picker.Opened += (_, _) => PositionTagPicker(picker);
         picker.WindowStartupLocation = WindowStartupLocation.Manual;
         picker.Position = new PixelPoint(Position.X + 20, Position.Y + (int)Height + 4);
         await picker.ShowDialog(this);
+    }
+
+    private void PositionTagPicker(TagPickerWindow picker)
+    {
+        var screen = Screens.ScreenFromPoint(Position);
+        if (screen is null) return;
+
+        var workArea = screen.WorkingArea;
+        var pickerWidth = (int)Math.Ceiling(picker.Bounds.Width > 0 ? picker.Bounds.Width : picker.Width);
+        var pickerHeight = (int)Math.Ceiling(picker.Bounds.Height > 0 ? picker.Bounds.Height : picker.Height);
+        var qeditHeight = (int)Math.Ceiling(Height);
+        var x = ClampToWorkArea(Position.X + 20, workArea.X, workArea.Width, pickerWidth);
+        var belowY = Position.Y + qeditHeight + 4;
+        var y = belowY + pickerHeight <= workArea.Bottom
+            ? belowY
+            : GetAboveTagPickerY(Position.Y, pickerHeight, workArea);
+
+        picker.Position = new PixelPoint(x, y);
+    }
+
+    private static int GetAboveTagPickerY(int qeditTop, int pickerHeight, PixelRect workArea)
+    {
+        const int MinimumGap = 4;
+        const int MaximumGap = 100;
+        var closestY = qeditTop - pickerHeight - MinimumGap;
+        var farthestY = qeditTop - pickerHeight - MaximumGap;
+        var minimumY = Math.Max(workArea.Y, farthestY);
+        var maximumY = Math.Min(workArea.Bottom - pickerHeight, closestY);
+        if (minimumY <= maximumY)
+            return Math.Clamp(closestY, minimumY, maximumY);
+
+        return ClampToWorkArea(closestY, workArea.Y, workArea.Height, pickerHeight);
+    }
+
+    private static int ClampToWorkArea(int value, int areaStart, int areaLength, int itemLength)
+    {
+        var maximum = Math.Max(areaStart, areaStart + areaLength - itemLength);
+        return Math.Clamp(value, areaStart, maximum);
     }
 
     public void SaveStateOnShutdown()

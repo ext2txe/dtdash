@@ -246,3 +246,5 @@
 - 2026-09-12 10:10: Closes the tag picker after adding a new tag and returns focus to the qedit note input.
 - 2026-09-12 10:10: Guarantees that the tag picker closes after new-tag Enter, including when tag persistence reports an error.
 - 2026-09-12 10:10: Marks debug builds with a `(d)` informational version suffix to distinguish them from release builds.
+- 2026-09-21 12:03: Makes Alt+T available while focus is in the tag input and keeps the tag picker within the display working area without obscuring quick edit.
+- 2026-09-21 12:22: Keeps the above-qedit tag picker within 100 pixels of quick edit, removes generated version suffixes, and allows unused recent tags to be deleted.
