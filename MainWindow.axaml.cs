@@ -31,6 +31,7 @@ public partial class MainWindow : Window
         _notesPath = SettingsStore.ResolveActiveNotesPath(configPath, DateTime.Now);
         _skipGeometryRestore = IsShiftPressedAtStartup();
         InitializeComponent();
+        WindowState = WindowState.Minimized;
         this.FindControl<MenuItem>("VersionMenuItem")!.Header = $"Version {GetVersion()}";
         NotesList.ItemsSource = _notes;
         Directory.CreateDirectory(Path.GetDirectoryName(_notesPath)!);
@@ -57,8 +58,7 @@ public partial class MainWindow : Window
             RestoreGeometry();
             Dispatcher.UIThread.Post(() =>
             {
-                if (IsStickyQuickEditEnabled())
-                    OpenNoteWindow(false);
+                OpenNoteWindow(false);
                 if (ShouldStartMinimized())
                     WindowState = WindowState.Minimized;
             });
@@ -97,12 +97,19 @@ public partial class MainWindow : Window
 
     public void OpenNoteFromHotkey()
     {
-        var wasMinimized = WindowState == WindowState.Minimized;
-        if (!wasMinimized)
-            ActivateFromSecondInstance();
+        if (_noteWindow is { IsActive: true, WindowState: not WindowState.Minimized } activeNoteWindow)
+        {
+            activeNoteWindow.Close();
+            return;
+        }
+
         OpenNoteWindow(false);
-        if (wasMinimized)
-            WindowState = WindowState.Minimized;
+        if (_noteWindow is { } noteWindow)
+        {
+            noteWindow.WindowState = WindowState.Normal;
+            noteWindow.Activate();
+            noteWindow.Focus();
+        }
     }
 
     private void UpdateClock()
